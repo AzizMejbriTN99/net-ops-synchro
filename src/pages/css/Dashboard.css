@@ -1,0 +1,324 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Share+Tech+Mono&display=swap');
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+/* ── Layout ──────────────────────────────────────────────── */
+.app {
+  display: flex;
+  height: 100vh;
+  background: #eef3f9;
+  overflow: hidden;
+}
+
+/* ── Sidebar ─────────────────────────────────────────────── */
+.sb {
+  width: 240px;
+  min-width: 240px;
+  background: radial-gradient(ellipse at 40% 30%, #0f2a4a 0%, #060e1c 100%);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: width 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+    min-width 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.sb-collapsed .sb {
+  width: 68px;
+  min-width: 68px;
+}
+
+.sb-logo {
+  padding: 24px 20px 20px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  min-height: 72px;
+}
+
+.sb-logo-full {
+  width: 140px;
+  height: auto;
+}
+
+.sb-logo-icon {
+  width: 32px;
+  height: auto;
+}
+
+.sb-nav {
+  flex: 1;
+  padding: 14px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.ni {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.18s, color 0.18s;
+  width: 100%;
+  text-align: left;
+}
+
+.ni:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.ni.a {
+  background: rgba(0, 174, 212, 0.18);
+  color: #00e5ff;
+}
+
+.ni.a svg {
+  stroke: #00e5ff;
+}
+
+.sb-collapsed .ni {
+  justify-content: center;
+  padding: 10px;
+}
+
+/* Collapse toggle */
+.sb-toggle {
+  position: absolute;
+  top: 22px;
+  right: -13px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #0f2a4a;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: background 0.2s, color 0.2s;
+}
+
+.sb-toggle:hover {
+  background: #005fa3;
+  color: #fff;
+}
+
+/* Footer */
+.sb-ft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+}
+
+.av {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #005fa3, #00aed4);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+}
+
+.av.sm {
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  font-size: 11px;
+}
+
+.av-info {
+  flex: 1;
+  overflow: hidden;
+}
+
+.av-n {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.av-r {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 1px;
+  font-family: 'Share Tech Mono', monospace;
+  white-space: nowrap;
+}
+
+.sout {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.45);
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s;
+  margin-left: auto;
+}
+
+.sout:hover {
+  background: rgba(220, 50, 50, 0.2);
+  color: #ff6b6b;
+}
+
+/* ── Main ────────────────────────────────────────────────── */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* Topbar */
+.tb {
+  height: 64px;
+  min-height: 64px;
+  background: #fff;
+  border-bottom: 1px solid #dde8f2;
+  display: flex;
+  align-items: center;
+  padding: 0 28px;
+  gap: 16px;
+}
+
+.tb-ttl {
+  font-size: 17px;
+  font-weight: 700;
+  color: #0b1a30;
+  flex: 1;
+  letter-spacing: 0.1px;
+}
+
+.tb-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tb-divider {
+  width: 1px;
+  height: 24px;
+  background: #dde8f2;
+}
+
+.tb-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a2e45;
+}
+
+/* Scrollable content */
+.scr {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* ── Placeholder page ────────────────────────────────────── */
+.page-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 12px;
+  color: #7a96b0;
+  padding: 60px;
+}
+
+.placeholder-icon {
+  font-size: 48px;
+  opacity: 0.3;
+}
+
+.placeholder-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a2e45;
+}
+
+.placeholder-sub {
+  font-size: 14px;
+}
+
+.ni-icon {
+  width: 18px;
+  height: 18px;
+  filter: invert(1);
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+
+.ni.a .ni-icon {
+  opacity: 1;
+  filter: invert(1) sepia(1) saturate(2) hue-rotate(165deg);
+}
+
+.sout-icon {
+  width: 16px;
+  height: 16px;
+  filter: invert(1);
+  opacity: 0.5;
+}
+
+.sout:hover .sout-icon {
+  opacity: 1;
+  filter: invert(1) sepia(1) saturate(3) hue-rotate(310deg);
+}
+
+.sb-toggle-icon {
+  width: 14px;
+  height: 14px;
+  filter: invert(1);
+  opacity: 0.6;
+}
+
+.sb-toggle:hover .sb-toggle-icon {
+  opacity: 1;
+}

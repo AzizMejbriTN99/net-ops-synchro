@@ -1,0 +1,410 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Share+Tech+Mono&display=swap');
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #d8e4f0;
+}
+
+.lp {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url("../../../public/assets/images/login_bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.lcard {
+  display: flex;
+  width: 1080px;
+  max-width: 96vw;
+  height: 640px;
+  border-radius: 22px;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+  box-shadow:
+    0 2px 0 rgba(255, 255, 255, 0.7) inset,
+    0 32px 80px rgba(0, 20, 60, 0.2),
+    0 0 0 1px rgba(0, 80, 160, 0.12);
+  animation: cardIn 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.lbrand {
+  flex: 1.5;
+  background: radial-gradient(ellipse at 40% 40%, #0f2a4a 0%, #060e1c 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  padding: 40px 0;
+}
+
+.lbrand::after {
+  content: '';
+  position: absolute;
+  width: 560px;
+  height: 560px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 229, 255, 0.09) 0%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.lbrand-inner {
+  position: relative;
+  z-index: 1;
+  margin-left: 32px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.lbrand-inner img {
+  display: block;
+  width: 540px;
+  height: auto;
+}
+
+.lbrand-footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.lbrand-footer-label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.35);
+  text-transform: uppercase;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.lbrand-footer-logo {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  color: rgba(255, 255, 255, 0.85);
+  font-family: 'Inter', sans-serif;
+}
+
+/* ── Form panel ────────────────────────────────────────── */
+.lform {
+  flex: 1;
+  background: #f4f8fc;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 52px 48px;
+  gap: 6px;
+  position: relative; /* needed for overlay */
+}
+
+.ltitle {
+  font-size: 28px;
+  font-weight: 600;
+  color: #0b1a30;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.lsub {
+  font-size: 14px;
+  font-weight: 400;
+  color: #7a96b0;
+  margin-bottom: 28px;
+  letter-spacing: 0.2px;
+}
+
+.lfield {
+  width: 100%;
+  margin-bottom: 18px;
+}
+
+.lfield label {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  color: #4a6a88;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.lfield input {
+  width: 100%;
+  padding: 13px 16px;
+  background: #ffffff;
+  border: 1.5px solid #ccd8e8;
+  border-radius: 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  color: #0b1a30;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.lfield input::placeholder {
+  color: #b0c4d8;
+}
+
+.lfield input:focus {
+  border-color: #0099cc;
+  box-shadow: 0 0 0 3px rgba(0, 153, 204, 0.14);
+}
+
+.lforgot-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -10px;
+  margin-bottom: 10px;
+}
+
+.lforgot {
+  font-size: 13px;
+  font-weight: 500;
+  color: #7a96b0;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.2px;
+  transition: color 0.2s;
+}
+
+.lforgot:hover {
+  color: #0077bb;
+}
+
+.lbtn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(90deg, #005fa3, #00aed4);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+  margin-top: 4px;
+}
+
+.lbtn:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(0, 100, 180, 0.28);
+}
+
+.lbtn:active {
+  transform: translateY(0);
+}
+
+.lbtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.lbrand-footer-logo-img {
+  width: 200px;
+  height: auto;
+  filter: brightness(0) invert(1);
+  opacity: 0.85;
+}
+
+.lfield-password {
+  position: relative;
+  width: 100%;
+}
+
+.lfield-password input {
+  width: 100%;
+  padding-right: 45px;
+}
+
+.lpassword-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #7a96b0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  transition: color 0.2s;
+}
+
+.lpassword-toggle:hover {
+  color: #0077bb;
+}
+
+.lpassword-toggle svg {
+  display: block;
+}
+
+/* ── Overlay (loading / success) ───────────────────────── */
+.loverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(244, 248, 252, 0.88);
+  backdrop-filter: blur(2px);
+  border-radius: 0 22px 22px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.loverlay-ring {
+  width: 110px;
+  height: 110px;
+}
+
+.lring-track {
+  fill: none;
+  stroke: rgba(0, 80, 160, 0.1);
+  stroke-width: 4;
+}
+
+.lring-spin {
+  fill: none;
+  stroke: #005fa3;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 80 235;
+  transform-origin: center;
+  animation: ringRotate 0.9s linear infinite;
+}
+
+@keyframes ringRotate {
+  to { transform: rotate(360deg); }
+}
+
+.lring-success-fill {
+  fill: none;
+  stroke: #16a34a;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 314;
+  stroke-dashoffset: 314;
+  transform-origin: center;
+  transform: rotate(-90deg);
+  animation: ringFill 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes ringFill {
+  to { stroke-dashoffset: 0; }
+}
+
+.loverlay-tick {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+}
+
+.ltick-line {
+  fill: none;
+  stroke: #16a34a;
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 60;
+  stroke-dashoffset: 60;
+  animation: tickDraw 0.4s 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes tickDraw {
+  to { stroke-dashoffset: 0; }
+}
+
+/* ── Error banner ──────────────────────────────────────── */
+.lerror-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff1f1;
+  border: 1.5px solid #f87171;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #b91c1c;
+  margin-bottom: 14px;
+  animation: bannerIn 0.25s ease both;
+}
+
+@keyframes bannerIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.lerror-icon {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  border-radius: 50%;
+  background: #f87171;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Red input border on error ─────────────────────────── */
+.linput-error {
+  border-color: #f87171 !important;
+  box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.15) !important;
+}
+
+/* ── Shake animation ───────────────────────────────────── */
+.lfield-shake {
+  animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes shake {
+  10%, 90% { transform: translateX(-2px); }
+  20%, 80% { transform: translateX(4px); }
+  30%, 50%, 70% { transform: translateX(-6px); }
+  40%, 60% { transform: translateX(6px); }
+}
