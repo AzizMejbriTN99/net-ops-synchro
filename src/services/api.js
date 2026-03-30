@@ -13,3 +13,10 @@ export const NOTIFICATIONS = {
   markAllRead:    `${API_URL}/api/notifications/mark-all-read`,
   markOne: (id)=> `${API_URL}/api/notifications/${id}/read`,
 };
+
+export const CONSULTANT = {
+  demandes:              `${API_URL}/api/consultant/demandes`,
+  demandeById:   (id) => `${API_URL}/api/consultant/demandes/${id}`,
+  demandeStatus: (id) => `${API_URL}/api/consultant/demandes/${id}/status`,
+  technicians:          `${API_URL}/api/consultant/technicians`,
+};
