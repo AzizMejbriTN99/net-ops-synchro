@@ -144,6 +144,17 @@ export const AuthProvider = ({ children }) => {
 
     const res = await fetch(url, fetchOptions);
 
+    if (res.status === 401) {
+      localStorage.removeItem("session");
+      localStorage.removeItem("user");
+      localStorage.removeItem("userRoles");
+      setSession(null);
+      setUser(null);
+      setUserRoles(null);
+      navigate("/login", { replace: true });
+      return;
+    }
+
     if (!res.ok) {
       let errBody = null;
       try {

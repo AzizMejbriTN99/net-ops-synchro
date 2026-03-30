@@ -1,12 +1,18 @@
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "../auth/AuthContext";
-import { adminRoutes } from "../utilities/routes";
+import { getRoutesForRole } from "../utilities/routes";
 import NotificationBell from "../components/NotificationBell";
 import Clock from "../components/general/Clock";
 import "./css/Dashboard.css";
 
-const logo = "/assets/logos/logo-min.svg";
+const logo     = "/assets/logos/logo-min.svg";
 const logoIcon = "/assets/logos/logo-icon.svg";
+
+const formatRole = r => {
+  if (!r) return "";
+  const clean = r.replace("ROLE_", "");
+  return clean.charAt(0).toUpperCase() + clean.slice(1).toLowerCase();
+};
 
 const userMenuItems = [
   {
@@ -19,19 +25,18 @@ const userMenuItems = [
 
 export default function Dashboard() {
   const { logoutUser, userObj } = useAuth();
-  const [active, setActive] = useState(adminRoutes[0].id);
   const [collapsed, setCollapsed] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const menuRef = useRef();
+  const [menuOpen, setMenuOpen]   = useState(false);
+  const menuRef                   = useRef();
 
-  const formatRole = r => {
-    if (!r) return "";
-    const clean = r.replace("ROLE_", "");
-    return clean.charAt(0).toUpperCase() + clean.slice(1).toLowerCase();
-  };
+  // get role from userObj — strip ROLE_ prefix if present
+  const role = userObj?.role || "";
+  const routes = getRoutesForRole(role);
 
-  const ActivePage = adminRoutes.find(r => r.id === active)?.component;
-  const initials = userObj?.username
+  const [active, setActive] = useState(routes[0]?.id || "");
+
+  const ActivePage = routes.find(r => r.id === active)?.component;
+  const initials   = userObj?.username
     ? userObj.username.slice(0, 2).toUpperCase()
     : "AD";
 
@@ -53,7 +58,6 @@ export default function Dashboard() {
       className={`app ${collapsed ? "sb-collapsed" : ""}`}
       style={{ "--sb-width": collapsed ? "80px" : "240px" }}
     >
-
       <aside className="sb">
 
         <button className="sb-toggle" onClick={() => setCollapsed(c => !c)}>
@@ -72,7 +76,7 @@ export default function Dashboard() {
         </div>
 
         <nav className="sb-nav">
-          {adminRoutes.map(r => (
+          {routes.map(r => (
             <button
               key={r.id}
               className={`ni ${active === r.id ? "a" : ""}`}
@@ -90,8 +94,8 @@ export default function Dashboard() {
           {menuOpen && (
             <div className="av-menu">
               <div className="av-menu-header">
-                <div className="av-menu-name">{userObj?.username || "Admin"}</div>
-                <div className="av-menu-role">{formatRole(userObj?.role) || "Admin"}</div>
+                <div className="av-menu-name">{userObj?.username || "User"}</div>
+                <div className="av-menu-role">{formatRole(role)}</div>
               </div>
               <div className="av-menu-items">
                 {userMenuItems.map(item => (
@@ -111,7 +115,7 @@ export default function Dashboard() {
           <button
             className="av-btn"
             onClick={() => setMenuOpen(o => !o)}
-            title={collapsed ? (userObj?.username || "Admin") : ""}
+            title={collapsed ? (userObj?.username || "User") : ""}
           >
             <div className="av">{initials}</div>
           </button>
@@ -119,8 +123,8 @@ export default function Dashboard() {
           {!collapsed && (
             <>
               <div className="av-info" onClick={() => setMenuOpen(o => !o)} style={{ cursor: "pointer" }}>
-                <div className="av-n">{userObj?.username || "Admin"}</div>
-                <div className="av-r">{formatRole(userObj?.role) || "Admin"}</div>
+                <div className="av-n">{userObj?.username || "User"}</div>
+                <div className="av-r">{formatRole(role)}</div>
               </div>
               <button className="sout" onClick={logoutUser} title="Sign out">
                 <img src="/assets/icons/sign-out.svg" alt="Sign out" className="sout-icon" />
@@ -129,13 +133,12 @@ export default function Dashboard() {
           )}
 
         </div>
-
       </aside>
 
       <div className="main">
         <div className="tb">
           <div className="tb-ttl">
-            {adminRoutes.find(r => r.id === active)?.label}
+            {routes.find(r => r.id === active)?.label}
           </div>
           <div className="tb-right">
             <NotificationBell />

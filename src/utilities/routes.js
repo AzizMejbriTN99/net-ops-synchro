@@ -1,54 +1,60 @@
 import DashboardHome from "../pages/admin/DashboardHome";
 import UsersPage from "../pages/admin/UsersPage";
+import ConsultantDashboard from "../pages/consultant/ConsultantDashboard";
+import DemandesPage from "../pages/consultant/DemandesPage";
+import MapPage from "../pages/consultant/MapPage";
+import ServersPage from "../pages/consultant/ServersPage";
 
-export const routes = [
+export const ROLES = {
+  ADMIN: "ROLE_ADMIN",
+  CONSULTANT: "ROLE_CONSULTANT",
+  TECHNICIAN: "ROLE_TECHNICIAN",
+};
 
-  {
-    label: "Users Management",
-    items: [
-      {
-        label: "Add User",
-        icon: "pi pi-fw pi-database",
-        to: "/addUser"
-      },
-      {
-        label: "Edit User",
-        icon: "pi pi-fw pi-user",
-        to: "/editUser"
-      }
-    ]
-  },
-  {
-    label: "Servers",
-    items: [
-      {
-        label: "Servers Monitoring",
-        icon: "pi pi-fw pi-user",
-        to: "/serverMonitor"
-      }
-    ]
-  }
-
-];
-
-
-
-export const adminRoutes = [
+export const allRoutes = [
   {
     id: "dashboard",
     label: "Dashboard",
-    path: "dashboard",
     icon: "/assets/icons/dashboard.svg",
+    roles: [ROLES.ADMIN],
     component: DashboardHome,
   },
   {
     id: "users",
     label: "User Management",
-    path: "users",
     icon: "/assets/icons/users.svg",
+    roles: [ROLES.ADMIN],
     component: UsersPage,
+  },
+  {
+    id: "consultant-dashboard",
+    label: "Dashboard",
+    icon: "/assets/icons/dashboard.svg",
+    roles: [ROLES.CONSULTANT],
+    component: ConsultantDashboard,
+  },
+  {
+    id: "demandes",
+    label: "Demandes",
+    icon: "/assets/icons/ticket-assigned.svg",
+    roles: [ROLES.CONSULTANT],
+    component: DemandesPage,
+  },
+  {
+    id: "map",
+    label: "Map",
+    icon: "/assets/icons/topology.svg",
+    roles: [ROLES.CONSULTANT],
+    component: MapPage,
+  },
+  {
+    id: "servers",
+    label: "Servers",
+    icon: "/assets/icons/security.svg",
+    roles: [ROLES.CONSULTANT],
+    component: ServersPage,
   },
 ];
 
-
-export default routes;
+export const getRoutesForRole = (role) =>
+  allRoutes.filter(r => r.roles.includes(role));

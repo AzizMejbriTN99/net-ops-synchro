@@ -291,3 +291,18 @@
 }
 .dbtn-save:disabled { opacity: 0.6; cursor: not-allowed; }
 .dbtn-save:hover:not(:disabled) { opacity: 0.88; }
+
+.td-date {
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.up-table td {
+  vertical-align: middle;
+}
+
+.up-table th,
+.up-table td {
+  text-align: left;
+  vertical-align: middle;
+}

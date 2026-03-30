@@ -8,6 +8,13 @@ import "./css/UsersPage.css";
 const ROLES = ["ADMIN", "CONSULTANT", "TECHNICIAN"];
 const formatRole = r => r ? r.charAt(0).toUpperCase() + r.slice(1).toLowerCase() : "";
 
+const formatDate = iso => {
+  if (!iso) return "—";
+  const d = new Date(iso);
+  return d.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+    + " " + d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+};
+
 function UserDrawer({ user, onClose, onSaved }) {
   const { authFetch } = useAuth();
   const isEdit = !!user?.id;
@@ -187,6 +194,8 @@ export default function UsersPage() {
                 <th>Email</th>
                 <th>Role</th>
                 <th>Status</th>
+                <th>Created</th>
+                <th>Last Updated</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -198,12 +207,16 @@ export default function UsersPage() {
                     <span>{u.username}</span>
                   </td>
                   <td className="td-muted">{u.email}</td>
-                  <td><span className={`role-badge ${roleColor(u.role)}`}>{formatRole(u.role)}</span></td>
+                  <td>
+                    <span className={`role-badge ${roleColor(u.role)}`}>{formatRole(u.role)}</span>
+                  </td>
                   <td>
                     <span className={`status-badge ${u.enabled ? "st-on" : "st-off"}`}>
                       {u.enabled ? "Active" : "Disabled"}
                     </span>
                   </td>
+                  <td className="td-muted td-date">{formatDate(u.createdAt)}</td>
+                  <td className="td-muted td-date">{formatDate(u.updatedAt)}</td>
                   <td className="td-actions">
                     <button className="act-btn edit" onClick={() => setDrawer({ user: u })}>Edit</button>
                     <button className="act-btn toggle" onClick={() => handleToggle(u.id, u.enabled)}>
