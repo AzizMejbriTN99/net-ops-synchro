@@ -70,7 +70,7 @@
   letter-spacing: 1.5px;
   text-transform: uppercase;
   color: #4a6a88;
-  font-family: 'Share Tech Mono', monospace;
+  font-family: 'Inter', sans-serif;
   border-bottom: 1px solid #dde8f2;
 }
 
@@ -113,7 +113,7 @@
   font-weight: 600;
   letter-spacing: 0.8px;
   text-transform: uppercase;
-  font-family: 'Share Tech Mono', monospace;
+  font-family: 'Inter', sans-serif;
 }
 
 .role-admin      { background: #fff0f0; color: #c0392b; }
@@ -224,7 +224,7 @@
   text-transform: uppercase;
   color: #4a6a88;
   margin-bottom: 8px;
-  font-family: 'Share Tech Mono', monospace;
+  font-family: 'Inter', sans-serif;
 }
 
 .dfield input,

@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../auth/AuthContext";
 import { ADMIN } from "../../services/api";
+import ToastContainer from "../../components/general/ToastContainer";
+import useToast from "../../hooks/useToast";
 import "./css/UsersPage.css";
 
 const ROLES = ["ADMIN", "CONSULTANT", "TECHNICIAN"];
+const formatRole = r => r ? r.charAt(0).toUpperCase() + r.slice(1).toLowerCase() : "";
 
 function UserDrawer({ user, onClose, onSaved }) {
   const { authFetch } = useAuth();
@@ -54,7 +57,9 @@ function UserDrawer({ user, onClose, onSaved }) {
       <div className="drawer" onClick={e => e.stopPropagation()}>
         <div className="drawer-header">
           <span>{isEdit ? "Edit User" : "Add User"}</span>
-          <button className="drawer-close" onClick={onClose}>✕</button>
+          <button className="drawer-close" onClick={onClose}>
+            <img src="/assets/icons/close.svg" alt="close" style={{ width: 14, height: 14 }} />
+          </button>
         </div>
 
         {error && <div className="drawer-error">{error}</div>}
@@ -90,7 +95,7 @@ function UserDrawer({ user, onClose, onSaved }) {
           <div className="dfield">
             <label>Role <span className="req">*</span></label>
             <select value={form.role} onChange={e => set("role", e.target.value)}>
-              {ROLES.map(r => <option key={r} value={r}>{r}</option>)}
+              {ROLES.map(r => <option key={r} value={r}>{formatRole(r)}</option>)}
             </select>
           </div>
         </div>
@@ -112,6 +117,7 @@ export default function UsersPage() {
   const [loading, setLoading] = useState(true);
   const [drawer, setDrawer] = useState(null);
   const [deleting, setDeleting] = useState(null);
+  const { toasts, addToast, removeToast } = useToast();
 
   const load = async () => {
     setLoading(true);
@@ -127,26 +133,39 @@ export default function UsersPage() {
 
   useEffect(() => { load(); }, []);
 
-  const handleToggle = async (id) => {
+  const handleToggle = async (id, enabled) => {
     try {
       await authFetch(ADMIN.userToggle(id), { method: "PATCH" });
+      addToast(`User ${enabled ? "disabled" : "enabled"} successfully`);
       load();
-    } catch (e) { console.error(e); }
+    } catch (e) {
+      addToast(e.message || "Action failed", "error");
+    }
   };
 
   const handleDelete = async (id) => {
     setDeleting(id);
     try {
       await authFetch(ADMIN.userById(id), { method: "DELETE" });
+      addToast("User deleted successfully");
       load();
-    } catch (e) { console.error(e); }
-    finally { setDeleting(null); }
+    } catch (e) {
+      addToast(e.message || "Delete failed", "error");
+    } finally {
+      setDeleting(null);
+    }
   };
 
-  const roleColor = r => ({ ADMIN: "role-admin", CONSULTANT: "role-consultant", TECHNICIAN: "role-tech" }[r] || "");
+  const roleColor = r => ({
+    ADMIN: "role-admin",
+    CONSULTANT: "role-consultant",
+    TECHNICIAN: "role-tech"
+  }[r] || "");
 
   return (
     <div className="users-page">
+      <ToastContainer toasts={toasts} onClose={removeToast} />
+
       <div className="up-header">
         <div>
           <div className="up-title">User Management</div>
@@ -179,7 +198,7 @@ export default function UsersPage() {
                     <span>{u.username}</span>
                   </td>
                   <td className="td-muted">{u.email}</td>
-                  <td><span className={`role-badge ${roleColor(u.role)}`}>{u.role}</span></td>
+                  <td><span className={`role-badge ${roleColor(u.role)}`}>{formatRole(u.role)}</span></td>
                   <td>
                     <span className={`status-badge ${u.enabled ? "st-on" : "st-off"}`}>
                       {u.enabled ? "Active" : "Disabled"}
@@ -187,7 +206,7 @@ export default function UsersPage() {
                   </td>
                   <td className="td-actions">
                     <button className="act-btn edit" onClick={() => setDrawer({ user: u })}>Edit</button>
-                    <button className="act-btn toggle" onClick={() => handleToggle(u.id)}>
+                    <button className="act-btn toggle" onClick={() => handleToggle(u.id, u.enabled)}>
                       {u.enabled ? "Disable" : "Enable"}
                     </button>
                     <button
@@ -209,7 +228,11 @@ export default function UsersPage() {
         <UserDrawer
           user={drawer.user}
           onClose={() => setDrawer(null)}
-          onSaved={() => { setDrawer(null); load(); }}
+          onSaved={() => {
+            setDrawer(null);
+            load();
+            addToast(drawer.user ? "User updated successfully" : "User created successfully");
+          }}
         />
       )}
     </div>
