@@ -50,20 +50,11 @@ function DemandeDrawer({ demande, technicians, onClose, onSaved }) {
         setSaving(true);
         setSaving_error("");
         try {
-            const body = { ...form, technicianId: form.technicianId || null };
-            if (isEdit) {
-                await authFetch(CONSULTANT.demandeById(demande.id), {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(body),
-                });
-            } else {
-                await authFetch(CONSULTANT.demandes, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(body),
-                });
-            }
+            await authFetch(CONSULTANT.demandeById(demande.id), {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ...form, technicianId: form.technicianId || null }),
+            });
             onSaved();
         } catch (e) {
             setSaving_error(e.message || "Something went wrong.");
@@ -145,7 +136,7 @@ function DemandeDrawer({ demande, technicians, onClose, onSaved }) {
                 <div className="drawer-footer">
                     <button className="dbtn-cancel" onClick={onClose}>Cancel</button>
                     <button className="dbtn-save" onClick={handleSubmit} disabled={saving}>
-                        {saving ? "Saving…" : isEdit ? "Save Changes" : "Create Demande"}
+                        {saving ? "Saving…" : "Save Changes"}
                     </button>
                 </div>
             </div>
@@ -215,15 +206,7 @@ export default function DemandesPage() {
         <div className="demandes-page">
             <ToastContainer toasts={toasts} onClose={removeToast} />
 
-            <div className="dp-header">
-                <div>
-                    <div className="dp-title">Demandes</div>
-                    <div className="dp-sub">{demandes.length} total · {demandes.filter(d => d.status === "NEW").length} new</div>
-                </div>
-                <button className="dp-add" onClick={() => setDrawer({ demande: null })}>
-                    + New Demande
-                </button>
-            </div>
+
 
             {/* Filter tabs */}
             <div className="dp-tabs">
@@ -311,7 +294,7 @@ export default function DemandesPage() {
                     onSaved={() => {
                         setDrawer(null);
                         load();
-                        addToast(drawer.demande ? "Demande updated" : "Demande created");
+                        addToast("Demande updated successfully");
                     }}
                 />
             )}

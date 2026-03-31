@@ -1,0 +1,57 @@
+.cd-page {
+  padding: 32px 36px;
+  font-family: 'Inter', sans-serif;
+}
+
+.cd-header { margin-bottom: 28px; }
+.cd-title  { font-size: 22px; font-weight: 700; color: #0b1a30; }
+.cd-sub    { font-size: 13px; color: #7a96b0; margin-top: 4px; }
+.cd-loading { padding: 60px; text-align: center; color: #7a96b0; font-size: 14px; }
+
+.cd-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.cd-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 2px 12px rgba(0,20,60,0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cd-card-label { font-size: 12px; font-weight: 600; color: #7a96b0; }
+.cd-card-value { font-size: 36px; font-weight: 700; line-height: 1; }
+
+.cd-card-bar-wrap {
+  height: 4px;
+  background: #edf3fa;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.cd-card-bar {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.6s cubic-bezier(0.16,1,0.3,1);
+}
+
+.cd-card-pct { font-size: 11px; color: #b0c4d8; }
+
+.cd-total-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 24px 28px;
+  box-shadow: 0 2px 12px rgba(0,20,60,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cd-total-label { font-size: 15px; font-weight: 600; color: #4a6a88; }
+.cd-total-value { font-size: 40px; font-weight: 700; color: #0b1a30; }

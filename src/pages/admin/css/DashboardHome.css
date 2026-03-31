@@ -1,0 +1,59 @@
+.adh-page {
+  padding: 32px 36px;
+  font-family: 'Inter', sans-serif;
+}
+
+.adh-header { margin-bottom: 28px; }
+.adh-title  { font-size: 22px; font-weight: 700; color: #0b1a30; }
+.adh-sub    { font-size: 13px; color: #7a96b0; margin-top: 4px; }
+.adh-loading { padding: 60px; text-align: center; color: #7a96b0; font-size: 14px; }
+
+.adh-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: #4a6a88;
+  margin-bottom: 12px;
+  margin-top: 8px;
+}
+
+.adh-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.adh-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 2px 12px rgba(0,20,60,0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-top: 3px solid #dde8f2;
+}
+
+.adh-card-blue    { border-top-color: #005fa3; }
+.adh-card-green   { border-top-color: #16a34a; }
+.adh-card-neutral { border-top-color: #dde8f2; }
+
+.adh-card-label { font-size: 12px; font-weight: 600; color: #7a96b0; }
+.adh-card-value { font-size: 36px; font-weight: 700; color: #0b1a30; line-height: 1; }
+.adh-card-sub   { font-size: 11px; color: #b0c4d8; }
+
+.adh-card-bar-wrap {
+  height: 4px;
+  background: #edf3fa;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.adh-card-bar {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.6s cubic-bezier(0.16,1,0.3,1);
+}
