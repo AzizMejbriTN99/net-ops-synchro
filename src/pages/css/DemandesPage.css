@@ -35,7 +35,10 @@
   transition: opacity 0.2s, transform 0.15s;
 }
 
-.dp-add:hover { opacity: 0.88; transform: translateY(-1px); }
+.dp-add:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
 
 /* ── Filter tabs ─────────────────────────────────────────── */
 .dp-tabs {
@@ -61,7 +64,9 @@
   transition: all 0.15s;
 }
 
-.dp-tab:hover { background: #edf3fa; }
+.dp-tab:hover {
+  background: #edf3fa;
+}
 
 .dp-tab.active {
   background: #005fa3;
@@ -70,17 +75,20 @@
 }
 
 .dp-tab-count {
-  background: rgba(0,0,0,0.08);
+  background: rgba(0, 0, 0, 0.08);
   padding: 1px 7px;
   border-radius: 10px;
   font-size: 11px;
   font-weight: 600;
 }
 
-.dp-tab.active .dp-tab-count { background: rgba(255,255,255,0.2); }
+.dp-tab.active .dp-tab-count {
+  background: rgba(255, 255, 255, 0.2);
+}
 
 /* ── Table ───────────────────────────────────────────────── */
-.dp-loading, .dp-empty {
+.dp-loading,
+.dp-empty {
   text-align: center;
   padding: 48px;
   color: #7a96b0;
@@ -99,7 +107,9 @@
   font-size: 14px;
 }
 
-.dp-table thead tr { background: #edf3fa; }
+.dp-table thead tr {
+  background: #edf3fa;
+}
 
 .dp-table th {
   text-align: left;
@@ -120,16 +130,50 @@
   vertical-align: middle;
 }
 
-.dp-table tbody tr:last-child td { border-bottom: none; }
-.dp-table tbody tr:hover { background: #f8fbff; }
+.dp-table tbody tr:last-child td {
+  border-bottom: none;
+}
 
-.td-title-text { font-weight: 600; font-size: 14px; color: #0b1a30; }
-.td-desc       { font-size: 12px; color: #7a96b0; margin-top: 2px; }
-.td-client-name { font-weight: 500; }
-.td-muted      { color: #7a96b0; font-size: 13px; }
-.td-date       { white-space: nowrap; font-size: 12px; }
-.td-unassigned { color: #b0c4d8; font-style: italic; font-size: 12px; }
-.td-actions    { display: flex; gap: 6px; }
+.dp-table tbody tr:hover {
+  background: #f8fbff;
+}
+
+.td-title-text {
+  font-weight: 600;
+  font-size: 14px;
+  color: #0b1a30;
+}
+
+.td-desc {
+  font-size: 12px;
+  color: #7a96b0;
+  margin-top: 2px;
+}
+
+.td-client-name {
+  font-weight: 500;
+}
+
+.td-muted {
+  color: #7a96b0;
+  font-size: 13px;
+}
+
+.td-date {
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.td-unassigned {
+  color: #b0c4d8;
+  font-style: italic;
+  font-size: 12px;
+}
+
+.td-actions {
+  display: flex;
+  gap: 6px;
+}
 
 /* ── Priority badges ─────────────────────────────────────── */
 .priority-badge {
@@ -140,10 +184,25 @@
   font-family: 'Inter', sans-serif;
 }
 
-.p-low      { background: #f0fff8; color: #16a34a; }
-.p-medium   { background: #f0f7ff; color: #005fa3; }
-.p-high     { background: #fff8ed; color: #b45309; }
-.p-critical { background: #fff0f0; color: #c0392b; }
+.p-low {
+  background: #f0fff8;
+  color: #16a34a;
+}
+
+.p-medium {
+  background: #f0f7ff;
+  color: #005fa3;
+}
+
+.p-high {
+  background: #fff8ed;
+  color: #b45309;
+}
+
+.p-critical {
+  background: #fff0f0;
+  color: #c0392b;
+}
 
 /* ── Status select ───────────────────────────────────────── */
 .status-select {
@@ -159,10 +218,25 @@
   text-align: center;
 }
 
-.s-new      { background: #f0f7ff; color: #005fa3; }
-.s-progress { background: #fff8ed; color: #b45309; }
-.s-resolved { background: #f0fff8; color: #16a34a; }
-.s-closed   { background: #f5f5f5; color: #999; }
+.s-new {
+  background: #f0f7ff;
+  color: #005fa3;
+}
+
+.s-progress {
+  background: #fff8ed;
+  color: #b45309;
+}
+
+.s-resolved {
+  background: #f0fff8;
+  color: #16a34a;
+}
+
+.s-closed {
+  background: #f5f5f5;
+  color: #999;
+}
 
 /* ── Action buttons ──────────────────────────────────────── */
 .act-btn {
@@ -176,10 +250,24 @@
   transition: opacity 0.15s;
 }
 
-.act-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.act-btn.edit { background: #edf3fa; color: #005fa3; }
-.act-btn.del  { background: #fff0f0; color: #c0392b; }
-.act-btn:hover { opacity: 0.75; }
+.act-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.act-btn.edit {
+  background: #edf3fa;
+  color: #005fa3;
+}
+
+.act-btn.del {
+  background: #fff0f0;
+  color: #c0392b;
+}
+
+.act-btn:hover {
+  opacity: 0.75;
+}
 
 /* ── Drawer ──────────────────────────────────────────────── */
 .drawer-backdrop {
@@ -203,8 +291,13 @@
 }
 
 @keyframes drawerIn {
-  from { transform: translateX(100%); }
-  to   { transform: translateX(0); }
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
 }
 
 .drawer-header {
@@ -225,7 +318,10 @@
   color: #7a96b0;
   transition: color 0.2s;
 }
-.drawer-close:hover { color: #0b1a30; }
+
+.drawer-close:hover {
+  color: #0b1a30;
+}
 
 .drawer-error {
   margin: 16px 28px 0;
@@ -256,9 +352,20 @@
   margin-bottom: -4px;
 }
 
-.dfield { display: flex; flex-direction: column; gap: 6px; }
-.dfield-row { display: flex; gap: 12px; }
-.dfield-row .dfield { flex: 1; }
+.dfield {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dfield-row {
+  display: flex;
+  gap: 12px;
+}
+
+.dfield-row .dfield {
+  flex: 1;
+}
 
 .dfield label {
   font-size: 12px;
@@ -289,7 +396,10 @@
   box-shadow: 0 0 0 3px rgba(0, 153, 204, 0.14);
 }
 
-.req { color: #f87171; margin-left: 2px; }
+.req {
+  color: #f87171;
+  margin-left: 2px;
+}
 
 .drawer-footer {
   padding: 20px 28px;
@@ -311,7 +421,10 @@
   cursor: pointer;
   transition: background 0.2s;
 }
-.dbtn-cancel:hover { background: #dde8f2; }
+
+.dbtn-cancel:hover {
+  background: #dde8f2;
+}
 
 .dbtn-save {
   padding: 10px 24px;
@@ -325,5 +438,41 @@
   cursor: pointer;
   transition: opacity 0.2s;
 }
-.dbtn-save:disabled { opacity: 0.6; cursor: not-allowed; }
-.dbtn-save:hover:not(:disabled) { opacity: 0.88; }
+
+.dbtn-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.dbtn-save:hover:not(:disabled) {
+  opacity: 0.88;
+}
+
+.status-badge-dp {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  display: inline-block;
+}
+
+.s-new {
+  background: #f0f7ff;
+  color: #005fa3;
+}
+
+.s-progress {
+  background: #fff8ed;
+  color: #b45309;
+}
+
+.s-resolved {
+  background: #f0fff8;
+  color: #16a34a;
+}
+
+.s-closed {
+  background: #f5f5f5;
+  color: #999;
+}

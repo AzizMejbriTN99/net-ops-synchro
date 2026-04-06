@@ -20,6 +20,7 @@ export const CONSULTANT = {
   demandeStatus: (id) => `${API_URL}/api/consultant/demandes/${id}/status`,
   demandeTimeline:(id)=> `${API_URL}/api/consultant/demandes/${id}/timeline`,
   demandeActions:(id) => `${API_URL}/api/consultant/demandes/${id}/actions`,
+  generateDemande: `${API_URL}/api/consultant/demandes/generate`,
   technicians:          `${API_URL}/api/consultant/technicians`,
 };
 
@@ -32,6 +33,22 @@ export const MAP = {
 };
 
 export const DASHBOARD = {
-  consultant: `${API_URL}/api/dashboard/consultant`,
-  admin:      `${API_URL}/api/dashboard/admin`,
+  consultant:        `${API_URL}/api/dashboard/consultant`,
+  admin:             `${API_URL}/api/dashboard/admin`,
+  adminMonthly:      `${API_URL}/api/dashboard/admin/monthly`,
+  consultantMonthly: `${API_URL}/api/dashboard/consultant/monthly`,
+};
+
+export const SERVERS = {
+  list:                  `${API_URL}/api/servers`,
+  byId:          (id) => `${API_URL}/api/servers/${id}`,
+  tomcat:                `${API_URL}/api/servers/tomcat`,
+  tomcatById:    (id) => `${API_URL}/api/servers/tomcat/${id}`,
+  tomcatControl: (id) => `${API_URL}/api/servers/tomcat/${id}/control`,
+  tomcatLog: (id, file) => `${API_URL}/api/servers/tomcat/${id}/logs/${file}`,
+  databases:             `${API_URL}/api/servers/databases`,
+  databaseById:  (id) => `${API_URL}/api/servers/databases/${id}`,
+  status:                `${API_URL}/api/servers/status`,
+  statusTomcat:          `${API_URL}/api/servers/status/tomcat`,
+  statusDatabases:       `${API_URL}/api/servers/status/databases`,
 };

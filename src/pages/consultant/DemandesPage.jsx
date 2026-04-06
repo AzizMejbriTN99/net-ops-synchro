@@ -3,6 +3,7 @@ import { useAuth } from "../../auth/AuthContext";
 import { CONSULTANT } from "../../services/api";
 import ToastContainer from "../../components/general/ToastContainer";
 import useToast from "../../hooks/useToast";
+import useSortableTable from "../../hooks/useSortableTable";
 import "../css/DemandesPage.css";
 
 const STATUSES = ["NEW", "IN_PROGRESS", "RESOLVED", "CLOSED"];
@@ -171,7 +172,21 @@ export default function DemandesPage() {
         }
     };
 
+    const drawerCity = drawer?.demande?.clientLocation
+        ? null : null;
+
+    const loadTechnicians = async (city) => {
+        try {
+            const params = city ? `?city=${city}` : "";
+            const data = await authFetch(`${CONSULTANT.technicians}${params}`);
+            setTechnicians(data);
+        } catch (e) { console.error(e); }
+    };
+
     useEffect(() => { load(); }, []);
+
+    const filtered = filter === "ALL" ? demandes : demandes.filter(d => d.status === filter);
+    const { sorted: sortedDemandes, requestSort, getSortIcon } = useSortableTable(filtered, "createdAt");
 
     const handleDelete = async (id) => {
         setDeleting(id);
@@ -200,13 +215,9 @@ export default function DemandesPage() {
         }
     };
 
-    const filtered = filter === "ALL" ? demandes : demandes.filter(d => d.status === filter);
-
     return (
         <div className="demandes-page">
             <ToastContainer toasts={toasts} onClose={removeToast} />
-
-
 
             {/* Filter tabs */}
             <div className="dp-tabs">
@@ -233,18 +244,25 @@ export default function DemandesPage() {
                     <table className="dp-table">
                         <thead>
                             <tr>
-                                <th>Title</th>
-                                <th>Client</th>
-                                <th>Location</th>
-                                <th>Priority</th>
-                                <th>Status</th>
-                                <th>Technician</th>
-                                <th>Created</th>
+                                {[
+                                    { key: "title", label: "Title" },
+                                    { key: "clientName", label: "Client" },
+                                    { key: "clientLocation", label: "Location" },
+                                    { key: "priority", label: "Priority" },
+                                    { key: "status", label: "Status" },
+                                    { key: "technicianUsername", label: "Technician" },
+                                    { key: "createdAt", label: "Created" },
+                                ].map(col => (
+                                    <th key={col.key} onClick={() => requestSort(col.key)}
+                                        style={{ cursor: "pointer", userSelect: "none" }}>
+                                        {col.label}{getSortIcon(col.key)}
+                                    </th>
+                                ))}
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {filtered.map(d => (
+                            {sortedDemandes.map(d => (
                                 <tr key={d.id}>
                                     <td className="td-title">
                                         <div className="td-title-text">{d.title}</div>
@@ -259,13 +277,9 @@ export default function DemandesPage() {
                                     <td className="td-muted">{d.clientLocation || "—"}</td>
                                     <td><span className={`priority-badge ${priorityClass(d.priority)}`}>{formatLabel(d.priority)}</span></td>
                                     <td>
-                                        <select
-                                            className={`status-select ${statusClass(d.status)}`}
-                                            value={d.status}
-                                            onChange={e => handleStatusChange(d.id, e.target.value)}
-                                        >
-                                            {STATUSES.map(s => <option key={s} value={s}>{formatLabel(s)}</option>)}
-                                        </select>
+                                        <span className={`status-badge-dp ${statusClass(d.status)}`}>
+                                            {formatLabel(d.status)}
+                                        </span>
                                     </td>
                                     <td className="td-muted">{d.technicianUsername || <span className="td-unassigned">Unassigned</span>}</td>
                                     <td className="td-muted td-date">{formatDate(d.createdAt)}</td>

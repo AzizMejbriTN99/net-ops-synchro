@@ -1,12 +1,79 @@
 .adh-page {
-  padding: 32px 36px;
+  padding: 28px 32px;
   font-family: 'Inter', sans-serif;
+  overflow-y: auto;
+  height: 100%;
 }
 
-.adh-header { margin-bottom: 28px; }
-.adh-title  { font-size: 22px; font-weight: 700; color: #0b1a30; }
-.adh-sub    { font-size: 13px; color: #7a96b0; margin-top: 4px; }
-.adh-loading { padding: 60px; text-align: center; color: #7a96b0; font-size: 14px; }
+.adh-loading {
+  padding: 60px;
+  text-align: center;
+  color: #7a96b0;
+  font-size: 14px;
+}
+
+.adh-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.adh-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0b1a30;
+}
+
+.adh-sub {
+  font-size: 13px;
+  color: #7a96b0;
+  margin-top: 4px;
+}
+
+.adh-date-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.adh-date-filter label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #4a6a88;
+}
+
+.adh-date-filter input[type="date"] {
+  padding: 7px 10px;
+  border: 1.5px solid #ccd8e8;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: #0b1a30;
+  background: #f4f8fc;
+  outline: none;
+  cursor: pointer;
+}
+
+.adh-filter-btn {
+  padding: 7px 16px;
+  background: #005fa3;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.adh-filter-btn:hover {
+  opacity: 0.85;
+}
 
 .adh-section-label {
   font-size: 11px;
@@ -15,45 +82,129 @@
   text-transform: uppercase;
   color: #4a6a88;
   margin-bottom: 12px;
-  margin-top: 8px;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.adh-grid {
+.adh-period-total {
+  font-size: 11px;
+  font-weight: 600;
+  color: #005fa3;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.adh-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 14px;
-  margin-bottom: 28px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 8px;
 }
 
 .adh-card {
   background: #fff;
-  border-radius: 14px;
-  padding: 20px;
-  box-shadow: 0 2px 12px rgba(0,20,60,0.06);
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 2px 10px rgba(0, 20, 60, 0.05);
+  border-top: 3px solid #dde8f2;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  border-top: 3px solid #dde8f2;
+  gap: 4px;
 }
 
-.adh-card-blue    { border-top-color: #005fa3; }
-.adh-card-green   { border-top-color: #16a34a; }
-.adh-card-neutral { border-top-color: #dde8f2; }
+.adh-card-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #7a96b0;
+}
 
-.adh-card-label { font-size: 12px; font-weight: 600; color: #7a96b0; }
-.adh-card-value { font-size: 36px; font-weight: 700; color: #0b1a30; line-height: 1; }
-.adh-card-sub   { font-size: 11px; color: #b0c4d8; }
+.adh-card-value {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #0b1a30;
+}
+
+.adh-card-sub {
+  font-size: 11px;
+  color: #b0c4d8;
+}
 
 .adh-card-bar-wrap {
-  height: 4px;
+  height: 3px;
   background: #edf3fa;
   border-radius: 2px;
   overflow: hidden;
-  margin-top: 4px;
+  margin-top: 6px;
 }
 
 .adh-card-bar {
   height: 100%;
   border-radius: 2px;
-  transition: width 0.6s cubic-bezier(0.16,1,0.3,1);
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.adh-summary-row {
+  display: flex;
+  gap: 0;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #dde8f2;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.adh-summary-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-right: 1px solid #edf3fa;
+}
+
+.adh-summary-item:last-child {
+  border-right: none;
+}
+
+.adh-summary-dot {
+  width: 10px;
+  height: 10px;
+  min-width: 10px;
+  border-radius: 50%;
+}
+
+.adh-summary-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.adh-summary-label {
+  font-size: 12px;
+  color: #7a96b0;
+  font-weight: 500;
+}
+
+.adh-summary-val {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.adh-charts-row {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.adh-chart-box {
+  background: #fff;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 2px 10px rgba(0, 20, 60, 0.05);
+  border: 1px solid #f0f4f8;
 }
