@@ -1,13 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useAuth } from "../../auth/AuthContext";
 import { CONSULTANT } from "../../services/api";
 import ToastContainer from "../../components/general/ToastContainer";
 import useToast from "../../hooks/useToast";
 import useSortableTable from "../../hooks/useSortableTable";
 import "../css/DemandesPage.css";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const STATUSES = ["NEW", "IN_PROGRESS", "RESOLVED", "CLOSED"];
 const PRIORITIES = ["LOW", "MEDIUM", "HIGH", "CRITICAL"];
+
 
 const formatLabel = s => s
     ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase().replace("_", " ")
@@ -155,6 +157,14 @@ export default function DemandesPage() {
     const [filter, setFilter] = useState("ALL");
     const [deleting, setDeleting] = useState(null);
     const { toasts, addToast, removeToast } = useToast();
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const [search, setSearch] = useState("");
+    const [page, setPage] = useState(1);
+
+    const ITEMS_PER_PAGE = 10;
+
 
     const load = async () => {
         setLoading(true);
@@ -183,10 +193,56 @@ export default function DemandesPage() {
         } catch (e) { console.error(e); }
     };
 
-    useEffect(() => { load(); }, []);
+    useEffect(() => {
+        load();
 
-    const filtered = filter === "ALL" ? demandes : demandes.filter(d => d.status === filter);
-    const { sorted: sortedDemandes, requestSort, getSortIcon } = useSortableTable(filtered, "createdAt");
+        const interval = setInterval(() => {
+            load();
+        }, 10000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const q = params.get("search");
+
+        if (q) {
+            setSearch(q);
+        }
+    }, [location.search]);
+
+    const filtered = demandes.filter(d => {
+
+        const matchesStatus =
+            filter === "ALL" || d.status === filter;
+
+        const matchesSearch =
+            !search ||
+            d.id?.toString().includes(search.toLowerCase()) ||
+            d.title?.toLowerCase().includes(search.toLowerCase()) ||
+            d.clientName?.toLowerCase().includes(search.toLowerCase()) ||
+            d.clientLocation?.toLowerCase().includes(search.toLowerCase()) ||
+            d.technicianUsername?.toLowerCase().includes(search.toLowerCase());
+
+        return matchesStatus && matchesSearch;
+    });
+
+    const { sorted: sortedDemandes, requestSort, getSortIcon } =
+        useSortableTable(filtered, "createdAt");
+
+    const paginatedDemandes = useMemo(() => {
+
+        const start = (page - 1) * ITEMS_PER_PAGE;
+        const end = start + ITEMS_PER_PAGE;
+
+        return sortedDemandes.slice(start, end);
+
+    }, [sortedDemandes, page]);
+
+    const totalPages = Math.ceil(sortedDemandes.length / ITEMS_PER_PAGE);
+
+
 
     const handleDelete = async (id) => {
         setDeleting(id);
@@ -235,6 +291,19 @@ export default function DemandesPage() {
                 ))}
             </div>
 
+            <div className="dp-search-wrap">
+                <input
+                    type="text"
+                    placeholder="Search demande..."
+                    value={search}
+                    onChange={(e) => {
+                        setSearch(e.target.value);
+                        setPage(1);
+                    }}
+                    className="dp-search"
+                />
+            </div>
+
             {loading ? (
                 <div className="dp-loading">Loading demandes…</div>
             ) : filtered.length === 0 ? (
@@ -262,8 +331,19 @@ export default function DemandesPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {sortedDemandes.map(d => (
-                                <tr key={d.id}>
+                            {paginatedDemandes.map(d => (
+                                <tr
+                                    key={d.id}
+                                    className={`
+        ${search &&
+                                            d.id?.toString() === search
+                                            ? "highlight-row"
+                                            : ""
+                                        }
+
+        priority-row-${d.priority?.toLowerCase()}
+    `}
+                                >
                                     <td className="td-title">
                                         <div className="td-title-text">{d.title}</div>
                                         {d.description && (
@@ -284,7 +364,23 @@ export default function DemandesPage() {
                                     <td className="td-muted">{d.technicianUsername || <span className="td-unassigned">Unassigned</span>}</td>
                                     <td className="td-muted td-date">{formatDate(d.createdAt)}</td>
                                     <td className="td-actions">
-                                        <button className="act-btn edit" onClick={() => setDrawer({ demande: d })}>Edit</button>
+
+                                        {(d.status === "NEW" || d.status === "IN_PROGRESS") && (
+                                            <button
+                                                className="act-btn map"
+                                                onClick={() => navigate(`/consultant/map?demande=${d.id}`)}
+                                            >
+                                                Map
+                                            </button>
+                                        )}
+
+                                        <button
+                                            className="act-btn edit"
+                                            onClick={() => setDrawer({ demande: d })}
+                                        >
+                                            Edit
+                                        </button>
+
                                         <button
                                             className="act-btn del"
                                             onClick={() => handleDelete(d.id)}
@@ -292,11 +388,33 @@ export default function DemandesPage() {
                                         >
                                             {deleting === d.id ? "…" : "Delete"}
                                         </button>
+
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
+                    <div className="dp-pagination">
+
+                        <button
+                            disabled={page === 1}
+                            onClick={() => setPage(p => p - 1)}
+                        >
+                            Prev
+                        </button>
+
+                        <span>
+                            Page {page} / {totalPages || 1}
+                        </span>
+
+                        <button
+                            disabled={page === totalPages}
+                            onClick={() => setPage(p => p + 1)}
+                        >
+                            Next
+                        </button>
+
+                    </div>
                 </div>
             )}
 

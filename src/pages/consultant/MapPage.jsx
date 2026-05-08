@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "../../auth/AuthContext";
 import { MAP, CONSULTANT } from "../../services/api";
 import "../css/MapPage.css";
+import { useLocation } from "react-router-dom";
 
 const GOOGLE_MAPS_KEY = "AIzaSyBS1RnxakpD9SbGCLBcz4MtRTT9yLoUBKQ";
 
@@ -68,16 +69,19 @@ export default function MapPage() {
     const markersRef = useRef({ locations: [], technicians: [], demandes: [] });
     const routeRef = useRef(null);
     const infoWindow = useRef(null);
-
+    const location = useLocation();
     const [city, setCity] = useState(null);
+
     const [layers, setLayers] = useState({
         locations: true,
         technicians: true,
         demandes: true,
     });
+
     const [data, setData] = useState({
         locations: [], technicians: [], demandes: []
     });
+
     const [loading, setLoading] = useState(true);
     const [selectedDemande, setSelected] = useState(null);
     const [timeline, setTimeline] = useState([]);
@@ -101,7 +105,30 @@ export default function MapPage() {
         }
     }, [city, authFetch]);
 
-    // init map
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const demandeId = params.get("demande");
+        if (!demandeId) return;
+
+        authFetch(CONSULTANT.demandeById(demandeId))
+            .then(demande => {
+                setSelected(demande);
+                if (
+                    demande.latitude &&
+                    demande.longitude &&
+                    mapInstance.current
+                ) {
+                    mapInstance.current.panTo({
+                        lat: demande.latitude,
+                        lng: demande.longitude
+                    });
+                    mapInstance.current.setZoom(15);
+                }
+
+            })
+            .catch(console.error);
+    }, [location.search, authFetch]);
+
     useEffect(() => {
         loadGoogleMaps(GOOGLE_MAPS_KEY).then(() => {
             const center = city ? CITY_CENTERS[city] : { lat: 33.8869, lng: 9.5375 };
@@ -119,8 +146,6 @@ export default function MapPage() {
     }, []);
 
     useEffect(() => { load(); }, [load]);
-
-    // poll technicians every 5s
     useEffect(() => {
         const id = setInterval(async () => {
             try {
@@ -132,7 +157,6 @@ export default function MapPage() {
         return () => clearInterval(id);
     }, [city, authFetch]);
 
-    // recenter on city change
     useEffect(() => {
         if (!mapInstance.current) return;
         if (city) {
@@ -144,14 +168,12 @@ export default function MapPage() {
         }
     }, [city]);
 
-    // load timeline when demande selected
     useEffect(() => {
         if (!selectedDemande) { setTimeline([]); return; }
         authFetch(CONSULTANT.demandeTimeline(selectedDemande.id))
             .then(setTimeline).catch(console.error);
     }, [selectedDemande]);
 
-    // draw route when technician going to site
     useEffect(() => {
         if (!mapInstance.current || !window.google) return;
         if (routeRef.current) { routeRef.current.setMap(null); routeRef.current = null; }
@@ -183,14 +205,12 @@ export default function MapPage() {
         });
     }, [selectedDemande, data.technicians]);
 
-    // render markers
     useEffect(() => {
         if (!mapInstance.current || !window.google) return;
 
         Object.values(markersRef.current).flat().forEach(m => m.setMap(null));
         markersRef.current = { locations: [], technicians: [], demandes: [] };
 
-        // location markers
         if (layers.locations) {
             markersRef.current.locations = data.locations
                 .filter(l => l.type !== "CITY_CENTER")
@@ -296,7 +316,7 @@ export default function MapPage() {
                 return marker;
             });
         }
-        
+
     }, [data, layers]);
 
     const ongoingDemandes = data.demandes.filter(d => d.status === "IN_PROGRESS");
