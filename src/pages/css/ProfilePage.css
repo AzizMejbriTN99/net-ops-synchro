@@ -1,0 +1,131 @@
+.profile-page {
+    padding: 32px;
+    display: flex;
+    justify-content: center;
+}
+
+.profile-card {
+    width: 100%;
+    max-width: 620px;
+
+    background: white;
+    border-radius: 18px;
+
+    border: 1px solid #dde8f2;
+
+    padding: 32px;
+}
+
+.profile-header {
+    margin-bottom: 28px;
+}
+
+.profile-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #0b1a30;
+}
+
+.profile-sub {
+    margin-top: 6px;
+    font-size: 14px;
+    color: #7a96b0;
+}
+
+.profile-section {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.profile-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.profile-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #4a6a88;
+}
+
+.profile-group input {
+    height: 44px;
+
+    border: 1.5px solid #ccd8e8;
+    border-radius: 12px;
+
+    padding: 0 14px;
+
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+}
+
+.profile-group input:focus {
+    border-color: #0099cc;
+    box-shadow: 0 0 0 3px rgba(0, 153, 204, 0.12);
+}
+
+.profile-group input:disabled {
+    background: #f4f7fb;
+    color: #7a96b0;
+}
+
+.profile-divider {
+    height: 1px;
+    background: #e6edf5;
+    margin: 8px 0;
+}
+
+.profile-save {
+    margin-top: 12px;
+
+    height: 46px;
+
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(90deg,
+            #005fa3,
+            #00aed4);
+    background-size: 200% 200%;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition:
+        background-position 0.45s ease,
+        transform 0.2s ease,
+        opacity 0.2s ease;
+}
+
+.profile-save:hover {
+    background-position: right center;
+    transform: translateY(-1px);
+}
+
+.profile-success {
+    margin-bottom: 18px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: #f0fff8;
+    color: #16a34a;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.profile-error {
+    margin-bottom: 18px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: #fff1f1;
+    color: #dc2626;
+    font-size: 13px;
+    font-weight: 500;
+}

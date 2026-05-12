@@ -5,7 +5,7 @@ import NotificationBell from "../components/NotificationBell";
 import Clock from "../components/general/Clock";
 import "./css/Dashboard.css";
 
-const logo     = "/assets/logos/logo-min.svg";
+const logo = "/assets/logos/logo-min.svg";
 const logoIcon = "/assets/logos/logo-icon.svg";
 
 const formatRole = r => {
@@ -15,6 +15,11 @@ const formatRole = r => {
 };
 
 const userMenuItems = [
+  {
+    id: "profile",
+    label: "Account",
+    icon: "/assets/icons/user-updated.svg",
+  },
   {
     id: "signout",
     label: "Sign Out",
@@ -26,17 +31,16 @@ const userMenuItems = [
 export default function Dashboard() {
   const { logoutUser, userObj } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
-  const [menuOpen, setMenuOpen]   = useState(false);
-  const menuRef                   = useRef();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef();
 
-  // get role from userObj — strip ROLE_ prefix if present
   const role = userObj?.role || "";
   const routes = getRoutesForRole(role);
 
   const [active, setActive] = useState(routes[0]?.id || "");
 
   const ActivePage = routes.find(r => r.id === active)?.component;
-  const initials   = userObj?.username
+  const initials = userObj?.username
     ? userObj.username.slice(0, 2).toUpperCase()
     : "AD";
 
@@ -48,9 +52,14 @@ export default function Dashboard() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
+  useEffect(() => {
+    if (active === "profile") return;
+  }, [active]);
+
   const handleMenuItem = (item) => {
     setMenuOpen(false);
     if (item.id === "signout") logoutUser();
+    if (item.id === "profile") setActive("profile");
   };
 
   return (

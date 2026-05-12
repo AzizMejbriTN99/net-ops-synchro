@@ -4,6 +4,7 @@ import ConsultantDashboard from "../pages/consultant/ConsultantDashboard";
 import DemandesPage from "../pages/consultant/DemandesPage";
 import MapPage from "../pages/consultant/MapPage";
 import ServersPage from "../pages/consultant/ServersPage";
+import ProfilePage from "../pages/profile/ProfilePage";
 
 export const ROLES = {
   ADMIN: "ROLE_ADMIN",
@@ -54,6 +55,8 @@ export const allRoutes = [
     roles: [ROLES.CONSULTANT],
     component: ServersPage,
   },
+ 
+
 ];
 
 export const getRoutesForRole = (role) =>
