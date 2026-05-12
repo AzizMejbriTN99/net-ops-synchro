@@ -2,7 +2,6 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "../../auth/AuthContext";
 import { MAP, CONSULTANT } from "../../services/api";
 import "../css/MapPage.css";
-import { useLocation } from "react-router-dom";
 
 const GOOGLE_MAPS_KEY = "AIzaSyBS1RnxakpD9SbGCLBcz4MtRTT9yLoUBKQ";
 
@@ -69,19 +68,16 @@ export default function MapPage() {
     const markersRef = useRef({ locations: [], technicians: [], demandes: [] });
     const routeRef = useRef(null);
     const infoWindow = useRef(null);
-    const location = useLocation();
-    const [city, setCity] = useState(null);
 
+    const [city, setCity] = useState(null);
     const [layers, setLayers] = useState({
         locations: true,
         technicians: true,
         demandes: true,
     });
-
     const [data, setData] = useState({
         locations: [], technicians: [], demandes: []
     });
-
     const [loading, setLoading] = useState(true);
     const [selectedDemande, setSelected] = useState(null);
     const [timeline, setTimeline] = useState([]);
@@ -97,7 +93,8 @@ export default function MapPage() {
                 authFetch(`${MAP.technicians}${params}`),
                 authFetch(`${MAP.demandes}${params}`),
             ]);
-            setData({ locations, technicians, demandes });
+            const toArr = r => Array.isArray(r) ? r : Array.isArray(r?.content) ? r.content : [];
+            setData({ locations: toArr(locations), technicians: toArr(technicians), demandes: toArr(demandes) });
         } catch (e) {
             console.error(e);
         } finally {
@@ -105,30 +102,7 @@ export default function MapPage() {
         }
     }, [city, authFetch]);
 
-    useEffect(() => {
-        const params = new URLSearchParams(location.search);
-        const demandeId = params.get("demande");
-        if (!demandeId) return;
-
-        authFetch(CONSULTANT.demandeById(demandeId))
-            .then(demande => {
-                setSelected(demande);
-                if (
-                    demande.latitude &&
-                    demande.longitude &&
-                    mapInstance.current
-                ) {
-                    mapInstance.current.panTo({
-                        lat: demande.latitude,
-                        lng: demande.longitude
-                    });
-                    mapInstance.current.setZoom(15);
-                }
-
-            })
-            .catch(console.error);
-    }, [location.search, authFetch]);
-
+    // init map
     useEffect(() => {
         loadGoogleMaps(GOOGLE_MAPS_KEY).then(() => {
             const center = city ? CITY_CENTERS[city] : { lat: 33.8869, lng: 9.5375 };
@@ -146,6 +120,8 @@ export default function MapPage() {
     }, []);
 
     useEffect(() => { load(); }, [load]);
+
+    // poll technicians every 5s
     useEffect(() => {
         const id = setInterval(async () => {
             try {
@@ -157,6 +133,7 @@ export default function MapPage() {
         return () => clearInterval(id);
     }, [city, authFetch]);
 
+    // recenter on city change
     useEffect(() => {
         if (!mapInstance.current) return;
         if (city) {
@@ -168,12 +145,14 @@ export default function MapPage() {
         }
     }, [city]);
 
+    // load timeline when demande selected
     useEffect(() => {
         if (!selectedDemande) { setTimeline([]); return; }
         authFetch(CONSULTANT.demandeTimeline(selectedDemande.id))
             .then(setTimeline).catch(console.error);
     }, [selectedDemande]);
 
+    // draw route when technician going to site
     useEffect(() => {
         if (!mapInstance.current || !window.google) return;
         if (routeRef.current) { routeRef.current.setMap(null); routeRef.current = null; }
@@ -205,12 +184,14 @@ export default function MapPage() {
         });
     }, [selectedDemande, data.technicians]);
 
+    // render markers
     useEffect(() => {
         if (!mapInstance.current || !window.google) return;
 
         Object.values(markersRef.current).flat().forEach(m => m.setMap(null));
         markersRef.current = { locations: [], technicians: [], demandes: [] };
 
+        // location markers
         if (layers.locations) {
             markersRef.current.locations = data.locations
                 .filter(l => l.type !== "CITY_CENTER")
@@ -292,29 +273,31 @@ export default function MapPage() {
 
         // demande markers
         if (layers.demandes) {
-            markersRef.current.demandes = data.demandes.map(d => {
-                const color = STATUS_COLORS[d.status] || "#999";
-                // warning triangle path
-                const marker = new window.google.maps.Marker({
-                    position: { lat: d.latitude, lng: d.longitude },
-                    map: mapInstance.current,
-                    title: d.title,
-                    icon: {
-                        path: "M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z",
-                        fillColor: color,
-                        fillOpacity: 1,
-                        strokeColor: "#fff",
-                        strokeWeight: 1,
-                        scale: 1.3,
-                        anchor: new window.google.maps.Point(12, 20),
-                    },
+            markersRef.current.demandes = data.demandes
+                .filter(d => d.status === "IN_PROGRESS")
+                .map(d => {
+                    const color = STATUS_COLORS[d.status] || "#999";
+                    // warning triangle path
+                    const marker = new window.google.maps.Marker({
+                        position: { lat: d.latitude, lng: d.longitude },
+                        map: mapInstance.current,
+                        title: d.title,
+                        icon: {
+                            path: "M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z",
+                            fillColor: color,
+                            fillOpacity: 1,
+                            strokeColor: "#fff",
+                            strokeWeight: 1,
+                            scale: 1.3,
+                            anchor: new window.google.maps.Point(12, 20),
+                        },
+                    });
+                    marker.addListener("click", () => {
+                        setSelected(d);
+                        mapInstance.current.panTo({ lat: d.latitude, lng: d.longitude });
+                    });
+                    return marker;
                 });
-                marker.addListener("click", () => {
-                    setSelected(d);
-                    mapInstance.current.panTo({ lat: d.latitude, lng: d.longitude });
-                });
-                return marker;
-            });
         }
 
     }, [data, layers]);
@@ -374,7 +357,7 @@ export default function MapPage() {
                     </div>
 
                     <div className="mlp-section-label">
-                        Ongoing ({filteredOngoing.length})
+                        In Progress ({filteredOngoing.length})
                     </div>
 
                     <div className="mlp-list">
