@@ -24,6 +24,9 @@ export const CONSULTANT = {
   demandeStatus: (id) => `${API_URL}/api/consultant/demandes/${id}/status`,
   demandeTimeline: (id) => `${API_URL}/api/consultant/demandes/${id}/timeline`,
   demandeActions: (id) => `${API_URL}/api/consultant/demandes/${id}/actions`,
+  demandePhotos: (id) => `${API_URL}/api/consultant/demandes/${id}/photos`,
+  demandePhotoFile: (demandeId, photoId) => `${API_URL}/api/consultant/demandes/${demandeId}/photos/${photoId}/file`,
+  demandePhotoDelete: (demandeId, photoId) => `${API_URL}/api/consultant/demandes/${demandeId}/photos/${photoId}`,
   generateDemande: `${API_URL}/api/consultant/demandes/generate`,
   technicians: `${API_URL}/api/consultant/technicians`,
 };

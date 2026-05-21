@@ -7,7 +7,10 @@ import useSortableTable from "../../hooks/useSortableTable";
 import "./css/UsersPage.css";
 
 const ROLES = ["ADMIN", "CONSULTANT", "TECHNICIAN"];
+const CITIES = ["TUNIS", "SOUSSE", "SFAX", "MONASTIR", "KAIROUAN"];
+
 const formatRole = r => r ? r.charAt(0).toUpperCase() + r.slice(1).toLowerCase() : "";
+const formatCity = c => c ? c.charAt(0).toUpperCase() + c.slice(1).toLowerCase() : "—";
 
 const formatDate = iso => {
     if (!iso) return "—";
@@ -24,6 +27,10 @@ function UserDrawer({ user, onClose, onSaved }) {
         username: user?.username || "",
         email: user?.email || "",
         password: "",
+        firstname: user?.firstname || "",
+        lastname: user?.lastname || "",
+        phone: user?.phone || "",
+        city: user?.city || "",
         role: user?.role || "CONSULTANT",
     });
     const [error, setError] = useState("");
@@ -33,23 +40,24 @@ function UserDrawer({ user, onClose, onSaved }) {
 
     const handleSubmit = async () => {
         if (!form.username || !form.email || (!isEdit && !form.password)) {
-            setError("Please fill in all required fields.");
+            setError("Username, email and password are required.");
             return;
         }
         setSaving(true);
         setError("");
         try {
+            const body = { ...form, city: form.city || null };
             if (isEdit) {
                 await authFetch(ADMIN.userById(user.id), {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(form),
+                    body: JSON.stringify(body),
                 });
             } else {
                 await authFetch(ADMIN.userRegister, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(form),
+                    body: JSON.stringify(body),
                 });
             }
             onSaved();
@@ -73,6 +81,9 @@ function UserDrawer({ user, onClose, onSaved }) {
                 {error && <div className="drawer-error">{error}</div>}
 
                 <div className="drawer-body">
+
+                    <div className="drawer-section-title">Account</div>
+
                     <div className="dfield">
                         <label>Username {!isEdit && <span className="req">*</span>}</label>
                         <input
@@ -105,6 +116,46 @@ function UserDrawer({ user, onClose, onSaved }) {
                         <select value={form.role} onChange={e => set("role", e.target.value)}>
                             {ROLES.map(r => <option key={r} value={r}>{formatRole(r)}</option>)}
                         </select>
+                    </div>
+
+                    <div className="drawer-section-title">Personal Info</div>
+
+                    <div className="dfield-row">
+                        <div className="dfield">
+                            <label>First Name</label>
+                            <input
+                                value={form.firstname}
+                                onChange={e => set("firstname", e.target.value)}
+                                placeholder="John"
+                            />
+                        </div>
+                        <div className="dfield">
+                            <label>Last Name</label>
+                            <input
+                                value={form.lastname}
+                                onChange={e => set("lastname", e.target.value)}
+                                placeholder="Doe"
+                            />
+                        </div>
+                    </div>
+                    <div className="dfield-row">
+                        <div className="dfield">
+                            <label>Phone</label>
+                            <input
+                                value={form.phone}
+                                onChange={e => set("phone", e.target.value)}
+                                placeholder="+216 XX XXX XXX"
+                            />
+                        </div>
+                        <div className="dfield">
+                            <label>City</label>
+                            <select value={form.city} onChange={e => set("city", e.target.value)}>
+                                <option value="">— Not set —</option>
+                                {CITIES.map(c => (
+                                    <option key={c} value={c}>{formatCity(c)}</option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -195,11 +246,13 @@ export default function UsersPage() {
                             <tr>
                                 {[
                                     { key: "username", label: "Username" },
+                                    { key: "firstname", label: "Name" },
                                     { key: "email", label: "Email" },
+                                    { key: "phone", label: "Phone" },
+                                    { key: "city", label: "City" },
                                     { key: "role", label: "Role" },
                                     { key: "enabled", label: "Status" },
                                     { key: "createdAt", label: "Created" },
-                                    { key: "updatedAt", label: "Last Updated" },
                                 ].map(col => (
                                     <th key={col.key} onClick={() => requestSort(col.key)}
                                         style={{ cursor: "pointer", userSelect: "none" }}>
@@ -216,7 +269,18 @@ export default function UsersPage() {
                                         <div className="td-avatar">{u.username[0].toUpperCase()}</div>
                                         <span>{u.username}</span>
                                     </td>
+                                    <td>
+                                        {(u.firstname || u.lastname)
+                                            ? `${u.firstname || ""} ${u.lastname || ""}`.trim()
+                                            : <span className="td-muted">—</span>}
+                                    </td>
                                     <td className="td-muted">{u.email}</td>
+                                    <td className="td-muted">{u.phone || "—"}</td>
+                                    <td>
+                                        {u.city
+                                            ? <span className="city-badge">{formatCity(u.city)}</span>
+                                            : <span className="td-muted">—</span>}
+                                    </td>
                                     <td>
                                         <span className={`role-badge ${roleColor(u.role)}`}>{formatRole(u.role)}</span>
                                     </td>
@@ -226,7 +290,6 @@ export default function UsersPage() {
                                         </span>
                                     </td>
                                     <td className="td-muted td-date">{formatDate(u.createdAt)}</td>
-                                    <td className="td-muted td-date">{formatDate(u.updatedAt)}</td>
                                     <td className="td-actions">
                                         <button className="act-btn edit" onClick={() => setDrawer({ user: u })}>Edit</button>
                                         <button className="act-btn toggle" onClick={() => handleToggle(u.id, u.enabled)}>

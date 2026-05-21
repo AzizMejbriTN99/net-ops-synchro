@@ -4,7 +4,7 @@ import { getRoutesForRole } from "../utilities/routes";
 import NotificationBell from "../components/NotificationBell";
 import Clock from "../components/general/Clock";
 import "./css/Dashboard.css";
-
+import ProfilePage from "./profile/ProfilePage";
 const logo = "/assets/logos/logo-min.svg";
 const logoIcon = "/assets/logos/logo-icon.svg";
 
@@ -38,8 +38,14 @@ export default function Dashboard() {
   const routes = getRoutesForRole(role);
 
   const [active, setActive] = useState(routes[0]?.id || "");
+  const ActivePage = active === "profile"
+    ? ProfilePage
+    : routes.find(r => r.id === active)?.component;
 
-  const ActivePage = routes.find(r => r.id === active)?.component;
+  const activeLabel = active === "profile"
+    ? "Account Settings"
+    : routes.find(r => r.id === active)?.label;
+
   const initials = userObj?.username
     ? userObj.username.slice(0, 2).toUpperCase()
     : "AD";
@@ -111,7 +117,14 @@ export default function Dashboard() {
                   <button
                     key={item.id}
                     className={`av-menu-item ${item.danger ? "danger" : ""}`}
-                    onClick={() => handleMenuItem(item)}
+                    onClick={() => {
+                      if (item.id === "profile") {
+                        setActive("profile");
+                      } else if (item.id === "signout") {
+                        logoutUser();
+                      }
+                      setMenuOpen(false);
+                    }}
                   >
                     <img src={item.icon} alt="" className="av-menu-icon" />
                     <span>{item.label}</span>
@@ -147,7 +160,7 @@ export default function Dashboard() {
       <div className="main">
         <div className="tb">
           <div className="tb-ttl">
-            {routes.find(r => r.id === active)?.label}
+            {activeLabel}
           </div>
           <div className="tb-right">
             <NotificationBell />

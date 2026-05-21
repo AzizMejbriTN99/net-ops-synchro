@@ -37,7 +37,10 @@
   transition: opacity 0.2s, transform 0.15s;
 }
 
-.up-add:hover { opacity: 0.88; transform: translateY(-1px); }
+.up-add:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
 
 .up-loading {
   color: #7a96b0;
@@ -80,10 +83,18 @@
   color: #1a2e45;
 }
 
-.up-table tbody tr:last-child td { border-bottom: none; }
-.up-table tbody tr:hover { background: #f8fbff; }
+.up-table tbody tr:last-child td {
+  border-bottom: none;
+}
 
-.td-muted { color: #7a96b0; font-size: 13px; }
+.up-table tbody tr:hover {
+  background: #f8fbff;
+}
+
+.td-muted {
+  color: #7a96b0;
+  font-size: 13px;
+}
 
 .td-user {
   display: flex;
@@ -116,9 +127,20 @@
   font-family: 'Inter', sans-serif;
 }
 
-.role-admin      { background: #fff0f0; color: #c0392b; }
-.role-consultant { background: #f0f7ff; color: #005fa3; }
-.role-tech       { background: #f0fff8; color: #16a34a; }
+.role-admin {
+  background: #fff0f0;
+  color: #c0392b;
+}
+
+.role-consultant {
+  background: #f0f7ff;
+  color: #005fa3;
+}
+
+.role-tech {
+  background: #f0fff8;
+  color: #16a34a;
+}
 
 .status-badge {
   padding: 3px 10px;
@@ -128,10 +150,20 @@
   letter-spacing: 0.5px;
 }
 
-.st-on  { background: #f0fff8; color: #16a34a; }
-.st-off { background: #f5f5f5; color: #999; }
+.st-on {
+  background: #f0fff8;
+  color: #16a34a;
+}
 
-.td-actions { display: flex; gap: 6px; }
+.st-off {
+  background: #f5f5f5;
+  color: #999;
+}
+
+.td-actions {
+  display: flex;
+  gap: 6px;
+}
 
 .act-btn {
   padding: 5px 12px;
@@ -144,11 +176,29 @@
   transition: opacity 0.15s;
 }
 
-.act-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.act-btn.edit   { background: #edf3fa; color: #005fa3; }
-.act-btn.toggle { background: #fff8ed; color: #b45309; }
-.act-btn.del    { background: #fff0f0; color: #c0392b; }
-.act-btn:hover  { opacity: 0.75; }
+.act-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.act-btn.edit {
+  background: #edf3fa;
+  color: #005fa3;
+}
+
+.act-btn.toggle {
+  background: #fff8ed;
+  color: #b45309;
+}
+
+.act-btn.del {
+  background: #fff0f0;
+  color: #c0392b;
+}
+
+.act-btn:hover {
+  opacity: 0.75;
+}
 
 /* ── Drawer ──────────────────────────────────── */
 .drawer-backdrop {
@@ -172,8 +222,13 @@
 }
 
 @keyframes drawerIn {
-  from { transform: translateX(100%); }
-  to   { transform: translateX(0); }
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
 }
 
 .drawer-header {
@@ -195,7 +250,10 @@
   cursor: pointer;
   transition: color 0.2s;
 }
-.drawer-close:hover { color: #0b1a30; }
+
+.drawer-close:hover {
+  color: #0b1a30;
+}
 
 .drawer-error {
   margin: 16px 28px 0;
@@ -253,7 +311,10 @@
   cursor: not-allowed;
 }
 
-.req { color: #f87171; margin-left: 2px; }
+.req {
+  color: #f87171;
+  margin-left: 2px;
+}
 
 .drawer-footer {
   padding: 20px 28px;
@@ -275,7 +336,10 @@
   cursor: pointer;
   transition: background 0.2s;
 }
-.dbtn-cancel:hover { background: #dde8f2; }
+
+.dbtn-cancel:hover {
+  background: #dde8f2;
+}
 
 .dbtn-save {
   padding: 10px 24px;
@@ -289,8 +353,15 @@
   cursor: pointer;
   transition: opacity 0.2s;
 }
-.dbtn-save:disabled { opacity: 0.6; cursor: not-allowed; }
-.dbtn-save:hover:not(:disabled) { opacity: 0.88; }
+
+.dbtn-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.dbtn-save:hover:not(:disabled) {
+  opacity: 0.88;
+}
 
 .td-date {
   font-size: 12px;
@@ -305,4 +376,38 @@
 .up-table td {
   text-align: left;
   vertical-align: middle;
+}
+
+.city-badge {
+  display: inline-block;
+  padding: 2px 9px;
+  background: #eef6ff;
+  color: #005fa3;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  border: 1px solid #c5dff5;
+}
+
+.drawer-section-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: #7a96b0;
+  margin: 18px 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #edf3fa;
+}
+
+.drawer-section-title:first-child {
+  margin-top: 0;
+}
+
+/* two-column field row */
+.dfield-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
 }
