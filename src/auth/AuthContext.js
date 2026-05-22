@@ -138,6 +138,7 @@ export const AuthProvider = ({ children }) => {
     const { parseAs, ...fetchOptions } = options;
 
     if (!fetchOptions.headers) fetchOptions.headers = {};
+
     if (session?.token) {
       fetchOptions.headers["Authorization"] = `Bearer ${session.token}`;
     }
@@ -148,32 +149,56 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem("session");
       localStorage.removeItem("user");
       localStorage.removeItem("userRoles");
+
       setSession(null);
       setUser(null);
       setUserRoles(null);
+
       navigate("/login", { replace: true });
       return;
     }
 
     if (!res.ok) {
       let errBody = null;
+
       try {
         const ct = res.headers.get("content-type") || "";
-        errBody = ct.includes("application/json") ? await res.json() : await res.text();
+
+        errBody = ct.includes("application/json")
+          ? await res.json()
+          : await res.text();
+
       } catch {
         errBody = null;
       }
+
       const msg =
         typeof errBody === "string"
           ? errBody
-          : errBody?.message || errBody?.rootMessage || `HTTP ${res.status}`;
+          : errBody?.message ||
+          errBody?.rootMessage ||
+          `HTTP ${res.status}`;
+
       throw new Error(msg);
     }
 
-    if (parseAs === "blob") return await res.blob();
-    if (parseAs === "text") return await res.text();
+    if (parseAs === "blob") {
+      return await res.blob();
+    }
 
-    return await res.json();
+    if (parseAs === "text") {
+      return await res.text();
+    }
+
+    // FIX IS HERE
+    const contentType = res.headers.get("content-type") || "";
+
+    if (contentType.includes("application/json")) {
+      const text = await res.text();
+      return text ? JSON.parse(text) : null;
+    }
+
+    return null;
   };
 
 

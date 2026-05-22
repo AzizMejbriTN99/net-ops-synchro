@@ -1,7 +1,8 @@
 import { API_URL } from "../API_ENDPOINTS";
 
 export const PROFILE = {
-  profile: `${API_URL}/api/auth/profile`
+  profile: `${API_URL}/api/profile`,
+  avatar:  `${API_URL}/api/profile/avatar`,
 }
 
 export const ADMIN = {
@@ -25,7 +26,7 @@ export const CONSULTANT = {
   demandeTimeline: (id) => `${API_URL}/api/consultant/demandes/${id}/timeline`,
   demandeActions: (id) => `${API_URL}/api/consultant/demandes/${id}/actions`,
   demandePhotos: (id) => `${API_URL}/api/consultant/demandes/${id}/photos`,
-  demandePhotoFile: (demandeId, photoId) => `${API_URL}/api/consultant/demandes/${demandeId}/photos/${photoId}/file`,
+  demandePhotoFile: (demandeId, photoId) => `${API_URL}/api/photos/${photoId}/file`,
   demandePhotoDelete: (demandeId, photoId) => `${API_URL}/api/consultant/demandes/${demandeId}/photos/${photoId}`,
   generateDemande: `${API_URL}/api/consultant/demandes/generate`,
   technicians: `${API_URL}/api/consultant/technicians`,

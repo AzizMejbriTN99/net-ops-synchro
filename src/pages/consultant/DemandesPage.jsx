@@ -69,6 +69,51 @@ function PhotoPanel({ demande, onClose }) {
         }
     };
 
+
+    function SecureImage({ src, alt, className }) {
+        const [blobUrl, setBlobUrl] = useState(null);
+
+        useEffect(() => {
+            let objectUrl = null;
+
+            const load = async () => {
+                try {
+                    const res = await authFetch(src, {
+                        rawResponse: true
+                    });
+
+                    const blob = await authFetch(src, { parseAs: "blob" });
+
+                    objectUrl = URL.createObjectURL(blob);
+
+                    setBlobUrl(objectUrl);
+                } catch (err) {
+                    console.error(err);
+                }
+            };
+
+            load();
+
+            return () => {
+                if (objectUrl) {
+                    URL.revokeObjectURL(objectUrl);
+                }
+            };
+        }, [src, authFetch]);
+
+        if (!blobUrl) {
+            return <div className="photo-loading">Loading...</div>;
+        }
+
+        return (
+            <img
+                src={blobUrl}
+                alt={alt}
+                className={className}
+            />
+        );
+    }
+
     const handleDelete = async (photoId) => {
         try {
             await authFetch(CONSULTANT.demandePhotoDelete(demande.id, photoId), { method: "DELETE" });
@@ -82,6 +127,25 @@ function PhotoPanel({ demande, onClose }) {
     const openPreview = (photo) => {
         const url = CONSULTANT.demandePhotoFile(demande.id, photo.id);
         setPreview({ id: photo.id, url, filename: photo.filename });
+    };
+
+    const openProtectedFile = async (url, token, filename) => {
+        try {
+            const res = await authFetch(url, {
+                rawResponse: true
+            });
+
+            if (!res.ok) throw new Error("Failed");
+
+            const blob = await res.blob();
+            const blobUrl = URL.createObjectURL(blob);
+
+            window.open(blobUrl, "_blank");
+
+            setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
+        } catch (e) {
+            console.error(e);
+        }
     };
 
     const isImage = filename => /\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i.test(filename || "");
@@ -101,14 +165,23 @@ function PhotoPanel({ demande, onClose }) {
             {preview && (
                 <div className="photo-preview-area">
                     {isImage(preview.filename)
-                        ? <img src={preview.url} alt={preview.filename} className="photo-preview-img"
-                            onError={e => { e.target.style.display = "none"; }} />
+                        ? <SecureImage
+                            src={preview.url}
+                            authFetch={authFetch}
+                            alt={preview.filename}
+                            className="photo-preview-img"
+                        />
                         : <div className="photo-preview-noimg">
                             <span style={{ fontSize: 40 }}>📄</span>
                             <div>{preview.filename}</div>
-                            <a href={preview.url} target="_blank" rel="noreferrer" className="photo-open-link">
+                            <button
+                                className="photo-open-link"
+                                onClick={() =>
+                                    openProtectedFile(preview.url, token, preview.filename)
+                                }
+                            >
                                 Open file ↗
-                            </a>
+                            </button>
                         </div>
                     }
                     <button className="photo-preview-close" onClick={() => setPreview(null)}>✕</button>
@@ -134,7 +207,12 @@ function PhotoPanel({ demande, onClose }) {
                                     >
                                         <div className="photo-card-thumbnail">
                                             {isImage(p.filename) ? (
-                                                <img src={fileUrl} alt={p.filename} className="photo-thumb-img" />
+                                                <SecureImage
+                                                    src={fileUrl}
+                                                    authFetch={authFetch}
+                                                    alt={p.filename}
+                                                    className="photo-thumb-img"
+                                                />
                                             ) : (
                                                 <span className="photo-thumb-doc-icon">Doc</span>
                                             )}
@@ -408,6 +486,8 @@ export default function DemandesPage() {
     };
 
     const { sorted: sortedDemandes, requestSort, getSortIcon } = useSortableTable(demandes, "createdAt");
+
+
 
     return (
         <div className="demandes-page">
