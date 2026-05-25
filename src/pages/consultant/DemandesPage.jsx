@@ -30,39 +30,82 @@ function PhotoPanel({ demande, onClose }) {
     const [photos, setPhotos] = useState([]);
     const [loading, setLoading] = useState(true);
     const [uploading, setUploading] = useState(false);
-    const [preview, setPreview] = useState(null); // {url, filename}
+    const [preview, setPreview] = useState(null);
     const fileRef = useRef();
+    const [timeline, setTimeline] = useState([]);
+    const imageCache = new Map();
+
 
     const loadPhotos = useCallback(async () => {
         setLoading(true);
+
         try {
-            const data = await authFetch(CONSULTANT.demandePhotos(demande.id));
-            setPhotos(Array.isArray(data) ? data : []);
+            const [photosData, timelineData] = await Promise.all([
+                authFetch(CONSULTANT.demandePhotos(demande.id)),
+                authFetch(CONSULTANT.demandeTimeline(demande.id)),
+            ]);
+
+            setPhotos(Array.isArray(photosData) ? photosData : []);
+            setTimeline(Array.isArray(timelineData) ? timelineData : []);
+
         } catch (e) {
             console.error(e);
+
         } finally {
             setLoading(false);
         }
     }, [demande.id, authFetch]);
 
-    useEffect(() => { loadPhotos(); }, [loadPhotos]);
+
+
+    const loadTimeline = useCallback(async () => {
+        try {
+            const data = await authFetch(
+                CONSULTANT.demandeTimeline(demande.id)
+            );
+
+            setTimeline(Array.isArray(data) ? data : []);
+
+        } catch (e) {
+            console.error(e);
+        }
+    }, [demande.id, authFetch]);
+
+    useEffect(() => {
+        loadPhotos();
+        loadTimeline();
+    }, [loadPhotos, loadTimeline]);
+
+    useEffect(() => {
+        loadPhotos();
+        loadTimeline();
+    }, [loadPhotos, loadTimeline]);
 
     const handleUpload = async (e) => {
         const file = e.target.files?.[0];
+
         if (!file) return;
+
         setUploading(true);
+
         try {
             const fd = new FormData();
+
             fd.append("file", file);
-            const res = await fetch(CONSULTANT.demandePhotos(demande.id), {
-                method: "POST",
-                headers: { Authorization: `Bearer ${token}` },
-                body: fd,
-            });
-            if (!res.ok) throw new Error("Upload failed");
-            loadPhotos();
+
+            await authFetch(
+                CONSULTANT.demandePhotos(demande.id),
+                {
+                    method: "POST",
+                    body: fd,
+                }
+            );
+
+            await loadPhotos();
+
         } catch (err) {
             console.error(err);
+
         } finally {
             setUploading(false);
             e.target.value = "";
@@ -70,23 +113,29 @@ function PhotoPanel({ demande, onClose }) {
     };
 
 
-    function SecureImage({ src, alt, className }) {
+    function SecureImage({ src, token, alt, className }) {
         const [blobUrl, setBlobUrl] = useState(null);
 
         useEffect(() => {
             let objectUrl = null;
 
             const load = async () => {
+
+                if (imageCache.has(src)) {
+                    setBlobUrl(imageCache.get(src));
+                    return;
+                }
+
                 try {
-                    const res = await authFetch(src, {
-                        rawResponse: true
+                    const blob = await authFetch(src, {
+                        parseAs: "blob"
                     });
 
-                    const blob = await authFetch(src, { parseAs: "blob" });
 
                     objectUrl = URL.createObjectURL(blob);
-
+                    imageCache.set(src, objectUrl);
                     setBlobUrl(objectUrl);
+
                 } catch (err) {
                     console.error(err);
                 }
@@ -94,12 +143,7 @@ function PhotoPanel({ demande, onClose }) {
 
             load();
 
-            return () => {
-                if (objectUrl) {
-                    URL.revokeObjectURL(objectUrl);
-                }
-            };
-        }, [src, authFetch]);
+        }, [src, token]);
 
         if (!blobUrl) {
             return <div className="photo-loading">Loading...</div>;
@@ -154,7 +198,7 @@ function PhotoPanel({ demande, onClose }) {
         <div className="photo-panel photo-panel-large">
             <div className="photo-panel-header">
                 <div>
-                    <div className="photo-panel-title">Attachments Gallery</div>
+                    <div className="photo-panel-title">Details</div>
                     <div className="photo-panel-sub">{demande.title}</div>
                 </div>
                 <button className="drawer-close" onClick={onClose}>
@@ -189,51 +233,102 @@ function PhotoPanel({ demande, onClose }) {
             )}
 
             <div className="photo-panel-container">
-                {/* Left Side: Thumbnail Grid Gallery (3 per row) */}
                 <div className="photo-gallery-main">
                     {loading ? (
                         <div className="photo-empty">Loading attachments…</div>
                     ) : photos.length === 0 ? (
                         <div className="photo-empty">No attachments uploaded for this ticket yet.</div>
                     ) : (
-                        <div className="photo-grid-layout">
-                            {photos.map(p => {
-                                const fileUrl = CONSULTANT.demandePhotoFile(demande.id, p.id);
-                                return (
-                                    <div
-                                        key={p.id}
-                                        className={`photo-grid-card ${preview?.id === p.id ? "active" : ""}`}
-                                        onClick={() => openPreview(p)}
-                                    >
-                                        <div className="photo-card-thumbnail">
-                                            {isImage(p.filename) ? (
-                                                <SecureImage
-                                                    src={fileUrl}
-                                                    authFetch={authFetch}
-                                                    alt={p.filename}
-                                                    className="photo-thumb-img"
-                                                />
-                                            ) : (
-                                                <span className="photo-thumb-doc-icon">Doc</span>
-                                            )}
+                        <div className="photo-grid-scroll">
+                            <div className="photo-grid-layout">
+                                {photos.map(p => {
+                                    const fileUrl = CONSULTANT.demandePhotoFile(demande.id, p.id);
+                                    return (
+                                        <div
+                                            key={p.id}
+                                            className={`photo-grid-card ${preview?.id === p.id ? "active" : ""}`}
+                                            onClick={() => openPreview(p)}
+                                        >
+                                            <div className="photo-card-thumbnail">
+                                                {isImage(p.filename) ? (
+                                                    <SecureImage
+                                                        src={fileUrl}
+                                                        authFetch={authFetch}
+                                                        alt={p.filename}
+                                                        className="photo-thumb-img"
+                                                    />
+                                                ) : (
+                                                    <span className="photo-thumb-doc-icon">Doc</span>
+                                                )}
+                                            </div>
+                                            <div className="photo-card-details">
+                                                <div className="photo-card-name" title={p.filename}>{p.filename}</div>
+                                                <div className="photo-card-meta">{p.uploadedBy}</div>
+                                            </div>
+                                            <button
+                                                className="photo-card-del-btn"
+                                                onClick={e => { e.stopPropagation(); handleDelete(p.id); }}
+                                                title="Delete Attachment"
+                                            >✕</button>
                                         </div>
-                                        <div className="photo-card-details">
-                                            <div className="photo-card-name" title={p.filename}>{p.filename}</div>
-                                            <div className="photo-card-meta">{p.uploadedBy}</div>
-                                        </div>
-                                        <button
-                                            className="photo-card-del-btn"
-                                            onClick={e => { e.stopPropagation(); handleDelete(p.id); }}
-                                            title="Delete Attachment"
-                                        >✕</button>
-                                    </div>
-                                );
-                            })}
+                                    );
+                                })}
+                            </div>
                         </div>
+
                     )}
+
+                    <div className="timeline-section">
+                        <div className="timeline-title">
+                            Activity Timeline
+                        </div>
+
+                        {timeline.length === 0 ? (
+                            <div className="timeline-empty">
+                                No activity recorded.
+                            </div>
+                        ) : (
+                            <div className="timeline-list">
+                                {timeline.map(item => (
+                                    <div key={item.id} className="timeline-item">
+
+                                        <div className="timeline-dot" />
+
+                                        <div className="timeline-content">
+
+                                            <div className="timeline-status">
+                                                {formatLabel(item.status)}
+                                            </div>
+
+                                            {item.note && (
+                                                <div className="timeline-note">
+                                                    {item.note}
+                                                </div>
+                                            )}
+
+                                            <div className="timeline-meta">
+                                                <span className="timeline-user">
+                                                    {item.performedBy || "Unknown User"}
+                                                </span>
+
+                                                {item.performedAt && (
+                                                    <>
+                                                        {" "}·{" "}
+                                                        <span className="timeline-date">
+                                                            {formatDate(item.performedAt)}
+                                                        </span>
+                                                    </>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
                 </div>
 
-                {/* Right Side: Persistent Action Area */}
                 <div className="photo-upload-side">
                     <div className="photo-upload-area" onClick={() => fileRef.current?.click()}>
                         <input
@@ -247,7 +342,6 @@ function PhotoPanel({ demande, onClose }) {
                             <span className="photo-upload-label">Uploading file…</span>
                         ) : (
                             <>
-                                {/* Replaced emoji with the exact SVG vector asset icon */}
                                 <span className="photo-upload-icon" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 6 }}>
                                     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                         <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
@@ -323,7 +417,7 @@ function DemandeDrawer({ demande, technicians, onClose, onSaved, onOpenPhotos })
                             style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
                         >
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
-                            <span>Attachments</span>
+                            <span>Details</span>
                         </button>
                         <button className="drawer-close" onClick={onClose}>
                             <img src="/assets/icons/close.svg" alt="close" style={{ width: 14, height: 14 }} />
@@ -442,6 +536,7 @@ export default function DemandesPage() {
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
     const [totalElements, setTotalElements] = useState(0);
+
 
     const load = useCallback(async () => {
         setLoading(true);
@@ -581,7 +676,7 @@ export default function DemandesPage() {
                                         <td className="td-muted">{d.technicianUsername || <span className="td-unassigned">Unassigned</span>}</td>
                                         <td className="td-muted td-date">{formatDate(d.createdAt)}</td>
                                         <td className="td-actions">
-                                            <button className="act-btn edit" onClick={() => setDrawer({ demande: d })}>Edit</button>
+                                            <button className="act-btn edit" onClick={() => setDrawer({ demande: d })}>Manage</button>
                                             <button className="act-btn del"
                                                 onClick={() => handleDelete(d.id)}
                                                 disabled={deleting === d.id}>

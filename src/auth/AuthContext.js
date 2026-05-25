@@ -190,7 +190,6 @@ export const AuthProvider = ({ children }) => {
       return await res.text();
     }
 
-    // FIX IS HERE
     const contentType = res.headers.get("content-type") || "";
 
     if (contentType.includes("application/json")) {
@@ -200,7 +199,6 @@ export const AuthProvider = ({ children }) => {
 
     return null;
   };
-
 
 
   return (
