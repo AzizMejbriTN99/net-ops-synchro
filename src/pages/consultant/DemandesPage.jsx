@@ -76,11 +76,6 @@ function PhotoPanel({ demande, onClose }) {
         loadTimeline();
     }, [loadPhotos, loadTimeline]);
 
-    useEffect(() => {
-        loadPhotos();
-        loadTimeline();
-    }, [loadPhotos, loadTimeline]);
-
     const handleUpload = async (e) => {
         const file = e.target.files?.[0];
 
@@ -206,79 +201,175 @@ function PhotoPanel({ demande, onClose }) {
                 </button>
             </div>
 
-            {preview && (
-                <div className="photo-preview-area">
-                    {isImage(preview.filename)
-                        ? <SecureImage
-                            src={preview.url}
-                            authFetch={authFetch}
-                            alt={preview.filename}
-                            className="photo-preview-img"
-                        />
-                        : <div className="photo-preview-noimg">
-                            <span style={{ fontSize: 40 }}>📄</span>
-                            <div>{preview.filename}</div>
-                            <button
-                                className="photo-open-link"
-                                onClick={() =>
-                                    openProtectedFile(preview.url, token, preview.filename)
-                                }
-                            >
-                                Open file ↗
-                            </button>
-                        </div>
-                    }
-                    <button className="photo-preview-close" onClick={() => setPreview(null)}>✕</button>
-                </div>
-            )}
-
             <div className="photo-panel-container">
-                <div className="photo-gallery-main">
-                    {loading ? (
-                        <div className="photo-empty">Loading attachments…</div>
-                    ) : photos.length === 0 ? (
-                        <div className="photo-empty">No attachments uploaded for this ticket yet.</div>
-                    ) : (
-                        <div className="photo-grid-scroll">
-                            <div className="photo-grid-layout">
-                                {photos.map(p => {
-                                    const fileUrl = CONSULTANT.demandePhotoFile(demande.id, p.id);
-                                    return (
-                                        <div
-                                            key={p.id}
-                                            className={`photo-grid-card ${preview?.id === p.id ? "active" : ""}`}
-                                            onClick={() => openPreview(p)}
-                                        >
-                                            <div className="photo-card-thumbnail">
-                                                {isImage(p.filename) ? (
-                                                    <SecureImage
-                                                        src={fileUrl}
-                                                        authFetch={authFetch}
-                                                        alt={p.filename}
-                                                        className="photo-thumb-img"
-                                                    />
-                                                ) : (
-                                                    <span className="photo-thumb-doc-icon">Doc</span>
-                                                )}
-                                            </div>
-                                            <div className="photo-card-details">
-                                                <div className="photo-card-name" title={p.filename}>{p.filename}</div>
-                                                <div className="photo-card-meta">{p.uploadedBy}</div>
-                                            </div>
-                                            <button
-                                                className="photo-card-del-btn"
-                                                onClick={e => { e.stopPropagation(); handleDelete(p.id); }}
-                                                title="Delete Attachment"
-                                            >✕</button>
+                <div className="photo-main-side">
+                    <div className="photo-preview-wrapper">
+                        {preview ? (
+                            isImage(preview.filename)
+                                ? (
+                                    <SecureImage
+                                        src={preview.url}
+                                        authFetch={authFetch}
+                                        alt={preview.filename}
+                                        className="photo-preview-large-img"
+                                    />
+                                )
+                                : (
+                                    <div className="photo-preview-noimg large">
+                                        <span style={{ fontSize: 60 }}>📄</span>
+
+                                        <div className="photo-preview-file-name">
+                                            {preview.filename}
                                         </div>
-                                    );
-                                })}
+
+                                        <button
+                                            className="photo-open-link"
+                                            onClick={() =>
+                                                openProtectedFile(
+                                                    preview.url,
+                                                    token,
+                                                    preview.filename
+                                                )
+                                            }
+                                        >
+                                            Open file ↗
+                                        </button>
+                                    </div>
+                                )
+                        ) : (
+                            <div className="photo-preview-placeholder">
+                                Select an attachment to preview
                             </div>
+                        )}
+                    </div>
+
+                    {/* THUMBNAILS AT BOTTOM */}
+                    <div className="photo-thumbnails-section">
+                        {loading ? (
+                            <div className="photo-empty">
+                                Loading attachments…
+                            </div>
+                        ) : photos.length === 0 ? (
+                            <div className="photo-empty">
+                                No attachments uploaded for this ticket yet.
+                            </div>
+                        ) : (
+                            <div className="photo-grid-scroll">
+                                <div className="photo-grid-layout">
+                                    {photos.map(p => {
+                                        const fileUrl = CONSULTANT.demandePhotoFile(
+                                            demande.id,
+                                            p.id
+                                        );
+
+                                        return (
+                                            <div
+                                                key={p.id}
+                                                className={`photo-grid-card ${preview?.id === p.id ? "active" : ""}`}
+                                                onClick={() => openPreview(p)}
+                                            >
+                                                <div className="photo-card-thumbnail">
+                                                    {isImage(p.filename) ? (
+                                                        <SecureImage
+                                                            src={fileUrl}
+                                                            authFetch={authFetch}
+                                                            alt={p.filename}
+                                                            className="photo-thumb-img"
+                                                        />
+                                                    ) : (
+                                                        <span className="photo-thumb-doc-icon">
+                                                            Doc
+                                                        </span>
+                                                    )}
+                                                </div>
+
+                                                <button
+                                                    className="photo-card-del-btn"
+                                                    onClick={e => {
+                                                        e.stopPropagation();
+                                                        handleDelete(p.id);
+                                                    }}
+                                                    title="Delete Attachment"
+                                                >
+                                                    ✕
+                                                </button>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* RIGHT SIDE */}
+                <div className="photo-side-column">
+
+                    {/* UPLOAD FIXED */}
+                    <div className="photo-upload-side">
+                        <div
+                            className="photo-upload-area"
+                            onClick={() => fileRef.current?.click()}
+                        >
+                            <input
+                                ref={fileRef}
+                                type="file"
+                                accept="image/*,.pdf,.doc,.docx"
+                                style={{ display: "none" }}
+                                onChange={handleUpload}
+                            />
+
+                            {uploading ? (
+                                <span className="photo-upload-label">
+                                    Uploading file…
+                                </span>
+                            ) : (
+                                <>
+                                    <span
+                                        className="photo-upload-icon"
+                                        style={{
+                                            display: "inline-flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            marginBottom: 6
+                                        }}
+                                    >
+                                        <svg
+                                            width="26"
+                                            height="26"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2.5"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        >
+                                            <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+                                        </svg>
+                                    </span>
+
+                                    <span
+                                        className="photo-upload-label"
+                                        style={{ fontWeight: 600 }}
+                                    >
+                                        Upload New File
+                                    </span>
+
+                                    <span className="photo-upload-hint">
+                                        Click here to attach document
+                                    </span>
+
+                                    <span className="photo-upload-formats">
+                                        Images, PDF, Word documents
+                                    </span>
+                                </>
+                            )}
                         </div>
+                    </div>
 
-                    )}
+                    {/* SCROLLABLE TIMELINE */}
+                    <div className="timeline-scroll-wrapper">
 
-                    <div className="timeline-section">
                         <div className="timeline-title">
                             Activity Timeline
                         </div>
@@ -290,8 +381,10 @@ function PhotoPanel({ demande, onClose }) {
                         ) : (
                             <div className="timeline-list">
                                 {timeline.map(item => (
-                                    <div key={item.id} className="timeline-item">
-
+                                    <div
+                                        key={item.id}
+                                        className="timeline-item"
+                                    >
                                         <div className="timeline-dot" />
 
                                         <div className="timeline-content">
@@ -307,6 +400,7 @@ function PhotoPanel({ demande, onClose }) {
                                             )}
 
                                             <div className="timeline-meta">
+
                                                 <span className="timeline-user">
                                                     {item.performedBy || "Unknown User"}
                                                 </span>
@@ -314,6 +408,7 @@ function PhotoPanel({ demande, onClose }) {
                                                 {item.performedAt && (
                                                     <>
                                                         {" "}·{" "}
+
                                                         <span className="timeline-date">
                                                             {formatDate(item.performedAt)}
                                                         </span>
@@ -324,33 +419,6 @@ function PhotoPanel({ demande, onClose }) {
                                     </div>
                                 ))}
                             </div>
-                        )}
-                    </div>
-
-                </div>
-
-                <div className="photo-upload-side">
-                    <div className="photo-upload-area" onClick={() => fileRef.current?.click()}>
-                        <input
-                            ref={fileRef}
-                            type="file"
-                            accept="image/*,.pdf,.doc,.docx"
-                            style={{ display: "none" }}
-                            onChange={handleUpload}
-                        />
-                        {uploading ? (
-                            <span className="photo-upload-label">Uploading file…</span>
-                        ) : (
-                            <>
-                                <span className="photo-upload-icon" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 6 }}>
-                                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                        <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
-                                    </svg>
-                                </span>
-                                <span className="photo-upload-label" style={{ fontWeight: 600 }}>Upload New File</span>
-                                <span className="photo-upload-hint">Click here to attach document</span>
-                                <span className="photo-upload-formats">Images, PDF, Word documents</span>
-                            </>
                         )}
                     </div>
                 </div>

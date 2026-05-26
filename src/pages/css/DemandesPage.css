@@ -775,14 +775,13 @@
   justify-content: center;
 }
 
-/* ── Photo panel ────────────────────────────────────────── */
 .photo-panel {
   background: #fff;
   border-radius: 18px;
   width: 540px;
   max-width: 96vw;
   max-height: 88vh;
-  overflow-y: auto;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
@@ -1008,19 +1007,14 @@
 
 /* Left side gallery sizing */
 .photo-gallery-main {
-  flex: 1;
-  min-width: 0;
-  max-height: 520px;
-  overflow-y: auto;
-  padding-right: 8px;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Horizontal scroll ONLY for gallery */
 .photo-grid-scroll {
-  width: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding-bottom: 10px;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 /* Gallery layout */
@@ -1126,16 +1120,21 @@
 
 /* Right side upload component alignment */
 .photo-upload-side {
-  width: 280px;
+  width: 340px;
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
 }
 
 /* Timeline separated from gallery scroll */
 .timeline-section {
-  margin-top: 28px;
+  flex: 1;
+  overflow-y: auto;
   border-top: 1px solid #e5e7eb;
-  padding-top: 22px;
-  width: 100%;
+  padding-top: 16px;
+  margin-top: 0;
 }
 
 .timeline-title {
@@ -1145,9 +1144,9 @@
 }
 
 .timeline-list {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
+  max-height: 260px;
+  overflow-y: auto;
+  padding-right: 6px;
 }
 
 .timeline-item {
@@ -1190,4 +1189,161 @@
 .timeline-empty {
   color: #9ca3af;
   font-size: 13px;
+}
+
+/* MAIN LAYOUT */
+.photo-panel-container {
+  display: flex;
+  gap: 24px;
+  height: 72vh;
+}
+
+/* LEFT MAIN SIDE */
+.photo-main-side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* HUGE PREVIEW */
+.photo-preview-wrapper {
+  flex: 1;
+  background: #f4f7fb;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  border: 1px solid #e2e8f0;
+}
+
+.photo-preview-large-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* PLACEHOLDER */
+.photo-preview-placeholder {
+  color: #94a3b8;
+  font-size: 15px;
+}
+
+/* BOTTOM THUMBNAILS */
+.photo-thumbnails-section {
+  margin-top: 18px;
+  flex-shrink: 0;
+}
+
+/* THUMBNAIL SCROLL */
+.photo-grid-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 100%;
+  padding-bottom: 10px;
+}
+
+/* HORIZONTAL THUMB LIST */
+.photo-grid-layout {
+  display: flex;
+  gap: 14px;
+  width: max-content;
+}
+
+/* FIXED SQUARE THUMB */
+.photo-grid-card {
+  width: 130px;
+  flex-shrink: 0;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 10px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.photo-grid-card:hover {
+  border-color: #0099cc;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.photo-grid-card.active {
+  border-color: #005fa3;
+  background: #eff6ff;
+}
+
+.photo-card-thumbnail {
+  width: 110px;
+  height: 110px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* RIGHT SIDE */
+.photo-side-column {
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+/* UPLOAD STAYS FIXED */
+.photo-upload-side {
+  flex-shrink: 0;
+}
+
+/* TIMELINE AREA */
+.timeline-scroll-wrapper {
+  margin-top: 18px;
+  flex: 1;
+  overflow-y: auto;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 18px;
+}
+
+/* FILE PREVIEW */
+.photo-preview-file-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #334155;
+}
+
+/* BIG DOC PREVIEW */
+.photo-preview-noimg.large {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.photo-big-viewer {
+  height: 420px;
+  width: 100%;
+  border-radius: 12px;
+  background: #0b1a30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.photo-big-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  /* IMPORTANT: no cropping */
 }
