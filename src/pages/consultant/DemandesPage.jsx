@@ -305,68 +305,6 @@ function PhotoPanel({ demande, onClose }) {
                 {/* RIGHT SIDE */}
                 <div className="photo-side-column">
 
-                    {/* UPLOAD FIXED */}
-                    <div className="photo-upload-side">
-                        <div
-                            className="photo-upload-area"
-                            onClick={() => fileRef.current?.click()}
-                        >
-                            <input
-                                ref={fileRef}
-                                type="file"
-                                accept="image/*,.pdf,.doc,.docx"
-                                style={{ display: "none" }}
-                                onChange={handleUpload}
-                            />
-
-                            {uploading ? (
-                                <span className="photo-upload-label">
-                                    Uploading file…
-                                </span>
-                            ) : (
-                                <>
-                                    <span
-                                        className="photo-upload-icon"
-                                        style={{
-                                            display: "inline-flex",
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            marginBottom: 6
-                                        }}
-                                    >
-                                        <svg
-                                            width="26"
-                                            height="26"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="2.5"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                        >
-                                            <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
-                                        </svg>
-                                    </span>
-
-                                    <span
-                                        className="photo-upload-label"
-                                        style={{ fontWeight: 600 }}
-                                    >
-                                        Upload New File
-                                    </span>
-
-                                    <span className="photo-upload-hint">
-                                        Click here to attach document
-                                    </span>
-
-                                    <span className="photo-upload-formats">
-                                        Images, PDF, Word documents
-                                    </span>
-                                </>
-                            )}
-                        </div>
-                    </div>
-
                     {/* SCROLLABLE TIMELINE */}
                     <div className="timeline-scroll-wrapper">
 
@@ -744,7 +682,7 @@ export default function DemandesPage() {
                                         <td className="td-muted">{d.technicianUsername || <span className="td-unassigned">Unassigned</span>}</td>
                                         <td className="td-muted td-date">{formatDate(d.createdAt)}</td>
                                         <td className="td-actions">
-                                            <button className="act-btn edit" onClick={() => setDrawer({ demande: d })}>Manage</button>
+                                            <button className="act-btn edit" onClick={() => setDrawer({ demande: d })}>Edit</button>
                                             <button className="act-btn del"
                                                 onClick={() => handleDelete(d.id)}
                                                 disabled={deleting === d.id}>

@@ -146,9 +146,6 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <div className="lforgot-row">
-            <button className="lforgot">Forgot password?</button>
-          </div>
 
           <button
             className="lbtn"
